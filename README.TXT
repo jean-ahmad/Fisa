@@ -15,7 +15,7 @@ The documentation in HTML is available in the directory "docs/html" from the fil
 Installation
 ############
 
-To compile and install the FISA library, the CMake (\p http://www.cmake.org) building system is required.
+To compile and install the FISA library, the CMake (http://www.cmake.org) building system is required.
 It is also necessary that the compiler provides c++11 smart pointers.
 Currently, support of "TimeEvent" events is available only with a GCC compiler.
 

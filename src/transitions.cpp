@@ -40,14 +40,8 @@ using namespace fisa;
 Event::~Event() {}
 
 //#######################################################################################
-  /*
-    TimeEvent
-  */
-
 /*
-std::shared_ptr<DateTime> _when;
-std::shared_ptr<DateTime> _exceeding;
-bool _isAfter;
+  TimeEvent
 */
 
 // -----------------------------------------------------------------------------------

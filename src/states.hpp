@@ -44,9 +44,16 @@ namespace fisa
   //! \private
   typedef struct
   {
-    bool _transition_fired = false;
-    bool _transition_firing_allowed = true;
-    bool _is_terminated = false;
+    void init()
+    {
+      this->_transition_fired = false;
+      this->_transition_firing_allowed = true;
+      this->_is_terminated = false;
+    }
+    
+    bool _transition_fired; // false;
+    bool _transition_firing_allowed; // true;
+    bool _is_terminated; // false;
   } RegionInfo;
   
   //#########################################################################################################

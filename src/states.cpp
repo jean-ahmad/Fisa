@@ -672,6 +672,7 @@ bool CompositeState::run(RegionInfo &in_region_info)
   for (std::vector<std::shared_ptr<Region> >::iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
     {
       RegionInfo region_info;
+      region_info.init();
       if (!(*it)->run(region_info))
 	{
 	  std::cout << "ERROR: CompositeState::run, state \"" << *this->_stateName <<
