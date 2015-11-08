@@ -51,7 +51,7 @@ namespace fisa
       this->_is_terminated = false;
     }
     
-    bool _transition_fired; // false;
+    bool _transition_fired;
     bool _transition_firing_allowed; // true;
     bool _is_terminated; // false;
   } RegionInfo;

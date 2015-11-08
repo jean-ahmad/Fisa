@@ -3,10 +3,6 @@
 #include <string>
 #include <memory>
 
-#ifdef GCC_SUPPORT
-#include <sys/time.h>
-#endif
-
 #include <iostream>
 
 using namespace fisa;

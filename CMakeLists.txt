@@ -40,7 +40,7 @@ endif(GCCTIME)
 # Building
 ######################################################################
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ansi -Wpedantic -std=c++11 ")
 
 include_directories ("${PROJECT_SOURCE_DIR}/src")
 

@@ -682,7 +682,7 @@ bool CompositeState::run(RegionInfo &in_region_info)
       if (region_info._transition_fired || !region_info._transition_firing_allowed) in_region_info._transition_firing_allowed = false;
       if (region_info._is_terminated) in_region_info._is_terminated = true;
     }
-  this->isCompleted();
+  if (this->isCompleted()) this->completed();
   return true;
 }
 
@@ -740,7 +740,6 @@ bool CompositeState::isCompleted() const
 	}
       else if (!std::dynamic_pointer_cast<FinalState>(active_state)) return false;
     }
-  this->completed();
   return true;
 }
 
