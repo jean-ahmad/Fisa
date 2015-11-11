@@ -5,7 +5,7 @@ FInite State Automata library
 Library that allows the modeling and the simulation of automata or concurrent systems.
 There is no limitation in the number of states and transitions that can be used to build a machine.
 Machines created match closely the specifications of "State Machines" as described in SysML.
-Provide consistency information such as multiple transitions firing from the same state.
+Provides consistency information such as multiple transitions firing from the same state.
 
 Documentation
 #############
