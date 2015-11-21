@@ -3,7 +3,7 @@
 
 <h2>Overview</h2>
 
-<div>Library that allows the modeling and the simulation of automata or concurrent systems. There is no limitation in the number of states and transitions that can be used to build a machine. Machines created match closely the specifications of "State Machines" as described in SysML. Provide consistency information such as multiple transitions firing from the same state.</div>
+<div>Library that allows the modeling and the simulation of automata or concurrent systems. There is no limitation in the number of states and transitions that can be used to build a machine. Machines created match closely the specifications of "State Machines" as described in SysML. Provides consistency information such as multiple transitions firing from the same state.</div>
 <h3>Machine:</h3>
 <list>
   <item>A machine is made of many regions. A region is where states and transitions are programmed. The regions in the machine or in "CompositeState" states are concurrent and only one transition can be fired in a region.</item>
