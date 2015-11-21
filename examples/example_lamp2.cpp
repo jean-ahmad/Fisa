@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 
-#ifdef GCCTIME_SUPPORT
+#ifdef OPENSOURCE_PLATFORM_TIME
 #include <sys/time.h>
 #endif
 
@@ -23,10 +23,8 @@ public:
   // Method called when the machine reach the state "on".
   void entry() const
   {
-#ifdef GCCTIME_SUPPORT
-    timeval now;
-    gettimeofday(&now, NULL);
-    std::cout << "Lamp is ON at " << DateTime(now).toIso8061() << std::endl;
+#ifdef OPENSOURCE_PLATFORM_TIME
+    std::cout << "Lamp is ON at " << OpenSourceTime::now().toIso8601() << std::endl;
 #endif
   }
   // Method called when the machine quit the state "on".
@@ -48,10 +46,8 @@ public:
   // Method called when the machine reach the state "off".
   void entry() const
   {
-#ifdef GCCTIME_SUPPORT
-    timeval now;
-    gettimeofday(&now, NULL);
-    std::cout << "Lamp is OFF at " << DateTime(now).toIso8061() << std::endl;
+#ifdef OPENSOURCE_PLATFORM_TIME
+    std::cout << "Lamp is OFF at " << OpenSourceTime::now().toIso8601() << std::endl;
 #endif
   }
   // Method called when the machine quit the state "off".
@@ -92,9 +88,9 @@ public:
     // Creation of a "TimeEvent" trigger.
     std::shared_ptr<TimeEvent> trigger1 = std::make_shared<TimeEvent>();
 
-    // Setting the duration before triggering at 2s with a margin of 500us.
+    // Setting the duration before triggering at 2s with a margin of 5ms.
     // If the machine won't change of state, you must increase the margin.
-    trigger1->after(std::make_shared<DateTime>(0, 0, 0, 0, 2, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 500));
+    trigger1->after(std::make_shared<DateTime>(0, 0, 0, 0, 2, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 5000));
 
     // Adding a transition from state "on" to state "off" with the trigger defined.
     std::shared_ptr<Transition> t1 = std::make_shared<Transition>("t1", "on", "off");
@@ -110,9 +106,9 @@ public:
     // Creation of a "TimeEvent" trigger.
     std::shared_ptr<TimeEvent> trigger2 = std::make_shared<TimeEvent>();
 
-    // Setting the duration before triggering at 1s with a margin of 500us.
+    // Setting the duration before triggering at 1s with a margin of 5ms.
     // If the machine won't change of state, you must increase the margin.
-    trigger2->after(std::make_shared<DateTime>(0, 0, 0, 0, 1, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 500));
+    trigger2->after(std::make_shared<DateTime>(0, 0, 0, 0, 1, 0), std::make_shared<DateTime>(0, 0, 0, 0, 1, 5000));
 
     // Adding a transition from state "off" to state "on" with the trigger defined.
     std::shared_ptr<Transition> t3 = std::make_shared<Transition>("t3", "off", "on");
@@ -134,7 +130,7 @@ public:
 
 int main(void)
 {
-#ifdef GCCTIME_SUPPORT
+#ifdef OPENSOURCE_PLATFORM_TIME
   std::cout << "Machine that automatically switch a lamp (2s ON and 1s OFF) during 10s." << std::endl;
 
   // Building of the machine.
@@ -142,11 +138,8 @@ int main(void)
   machine.build();
 
   // Setting the event that trigger transitions to the state "final" at 10s after the beginning.
-  timeval tv;
-  gettimeofday(&tv, NULL);
-  DateTime now(tv);
-  DateTime end = now + DateTime(0, 0, 0, 0, 10, 0);
-  machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 5, 0));
+  DateTime end = OpenSourceTime::now() + DateTime(0, 0, 0, 0, 10, 0);
+  machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 15, 0));
 
   // Run the machine until the state "final" is reached.
   while (machine.activeState("main") != std::string("final"))

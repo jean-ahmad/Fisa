@@ -32,7 +32,7 @@
 
 #include "datetime.hpp"
 
-#ifdef GCCTIME_SUPPORT
+#ifdef OPENSOURCE_PLATFORM_TIME
 #include <sys/time.h>
 #endif
 

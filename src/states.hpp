@@ -89,49 +89,52 @@ namespace fisa
     std::shared_ptr<std::string> owningRegion() const;
     
     //! \private
-    virtual bool addTransition(std::shared_ptr<Transition> in_transition); // polymorphic
+    virtual bool addTransition(std::shared_ptr<Transition> in_transition);
 
     //! \private
     bool addJoin(std::shared_ptr<JoinTransition> in_join);
 
     //! \private
-    virtual std::shared_ptr<Transition> fireTransition() const; // polymorphic
+    virtual std::shared_ptr<Transition> fireTransition() const;
 
     //! \private
-    virtual bool init(); // polymorphic
+    virtual bool init();
 
     //! \private
-    virtual bool initFork(std::shared_ptr<std::vector<std::string> > in_states_names); // polymorphic
+    virtual bool initFork(std::shared_ptr<std::vector<std::string> > in_states_names);
 
     //! \private
-    virtual bool finalize(); // polymorphic
+    virtual bool finalize();
 
     //! \private
-    virtual bool run(RegionInfo &in_region_info); // polymorphic
+    virtual bool run(RegionInfo &in_region_info);
     
     //! Called when a transition reaching the state is fired after the method "effect" of the transition.
     /** This method should be overloaded for "SimpleState" states or "CompositeState" states only. **/    
-    virtual void entry() const; // polymorphic for users
+    virtual void entry() const;
     
     //! Called when a transition starting from the state is fired before the method "effect" of the transition.
     /** This method should be overloaded for "SimpleState" states or "CompositeState" states only. **/
-    virtual void exit() const; // polymorphic for users
+    virtual void exit() const;
 
     //! \private
-    virtual bool isCompleted() const; // polymorphic
+    virtual bool isCompleted() const;
 
     //! Called when all regions in a composite state have reached a final pseudostate.
     /** This method should be overloaded for "CompositeState" states only. **/
     virtual void completed() const;
 
     //! \private
-    virtual std::shared_ptr<Region> findRegion(std::shared_ptr<std::string> in_region_name) const; // polymorphic
+    virtual std::shared_ptr<Region> findRegion(std::shared_ptr<std::string> in_region_name) const;
 
     //! \private
-    virtual std::shared_ptr<SimpleState> findState(std::shared_ptr<std::string> in_state_name) const; // polymorphic
+    virtual std::shared_ptr<SimpleState> findState(std::shared_ptr<std::string> in_state_name) const;
 
     //! \private
     virtual bool checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller = false) const;
+
+    //! \private
+    virtual bool isKind(const char *in_kind) const;
    
   protected:
     // Protected data
@@ -175,6 +178,9 @@ namespace fisa
 
     //! \private
     bool checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_name, bool in_is_caller = false) const;
+
+    //! \private
+    bool isKind(const char *in_kind) const;
   };
 
   //#########################################################################################################
@@ -210,6 +216,9 @@ namespace fisa
 
     //!private
     bool checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller = false) const;
+
+    //! \private
+    bool isKind(const char *in_kind) const;
   };
 
   //#########################################################################################################
@@ -246,22 +255,25 @@ namespace fisa
 
     //!private
     bool checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller = false) const;
+
+    //! \private
+    bool isKind(const char *in_kind) const;
   };
 
   //#########################################################################################################
   /*
     Region
   */
-  //! \private Class to program a region in the machine or in a composite state.
+  //! Class to program a region in the machine or in a composite state.
   /**
-   * To add a region in the machine use "Machine::newRegion" and to add a
+   * To add a region in the machine use "Machine::newRegion", and to add a
    * region in a composite state use "Composite::newRegion".
    **/
 
   class Region
   {
   public:    
-    //! Constructors.
+    //! \private
     Region(const char *in_region_name);
   
     //! \private
@@ -289,6 +301,9 @@ namespace fisa
     std::shared_ptr<SimpleState> activeState() const;
 
     //! \private
+    std::shared_ptr<SimpleState> findStateHere(std::shared_ptr<std::string> state_name) const;
+
+    //! \private
     std::shared_ptr<Region> findRegion(std::shared_ptr<std::string> in_region_name) const;
 
     //! \private
@@ -300,9 +315,8 @@ namespace fisa
   private:
     std::shared_ptr<std::string> _regionName;
     std::vector<std::shared_ptr<SimpleState> > _states;
-    bool _is_startingState;
-    std::shared_ptr<std::string> _startingState;
-    std::shared_ptr<std::string> _activeState;  
+    std::shared_ptr<SimpleState> _startingState;
+    std::shared_ptr<SimpleState> _activeState;
   };
 
   //#########################################################################################################
@@ -357,6 +371,9 @@ namespace fisa
 
     //! \private
     bool checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_name, bool in_is_caller = false) const;
+
+    //! \private
+    bool isKind(const char *in_kind) const;
     
   private:
     std::vector<std::shared_ptr<Region> > _regions;

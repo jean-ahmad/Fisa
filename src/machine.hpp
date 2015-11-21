@@ -43,8 +43,8 @@ namespace fisa
   //! Class for the modeling and the simulation of automata or concurrent systems.
   /**
    * A machine is made of many regions. A region is where states and transitions are programmed.
-   * The regions in the machine or in "CompositeState" states are concurrent and only one transition can
-   * fired in a region.
+   * The regions in the machine or in "CompositeState" states are concurrent and only one 
+   * transition can be fired in a region.
    * The class must be inherited and the method "build" overloaded to program the machine. 
    **/
 
@@ -62,7 +62,7 @@ namespace fisa
 
     //! Changes states of the machine.
     /** 
-     * Once the machine is builded, the method should be called for the initialization of machine.
+     * Once builded, the method should be called for the initialization of machine.
      * Each time it is called, the method check reception of events that fire transitions and 
      * changes states consequently.
      **/

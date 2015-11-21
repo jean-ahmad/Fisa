@@ -30,6 +30,26 @@
 
 using namespace fisa;
 
+//#########################################################################################################
+/*
+  OpenSourceTime
+*/
+
+#ifdef OPENSOURCE_PLATFORM_TIME
+// ---------------------------------------------------------------------------------------------------------------
+DateTime OpenSourceTime::now()
+{
+  timeval now;
+  gettimeofday(&now, NULL);
+  return DateTime(now);
+}
+#endif
+
+//#########################################################################################################
+/*
+  DateTime
+*/
+
 // ---------------------------------------------------------------------------------------------------------------
 DateTime::DateTime() : _year(1970), _month(1), _dayOfMonth(1), _hour(0), _minute(0), _second(0), _usecond(0)
 {
@@ -83,7 +103,7 @@ DateTime::DateTime(const char *in_datetime)
   computeMonthName();
 }
 
-#ifdef GCCTIME_SUPPORT
+#ifdef OPENSOURCE_PLATFORM_TIME
 // ---------------------------------------------------------------------------------------------------------------
 DateTime::DateTime(timeval &in_tv)
 {
@@ -147,7 +167,37 @@ DateTime::DateTime(timeval &in_tv)
 #endif
 
 // ---------------------------------------------------------------------------------------------------------------
+DateTime::DateTime(const DateTime &in_datetime)
+{
+  this->_year = in_datetime._year;
+  this->_month = in_datetime._month;
+  this->_smonth = std::make_shared<std::string>(*(in_datetime._smonth));
+  this->_dayOfYear = in_datetime._dayOfYear;
+  this->_dayOfMonth = in_datetime._dayOfMonth;
+  this->_hour = in_datetime._hour;
+  this->_minute = in_datetime._minute;
+  this->_second = in_datetime._second;
+  this->_usecond = in_datetime._usecond;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 DateTime::~DateTime() {}
+
+// ---------------------------------------------------------------------------------------------------------------
+DateTime& DateTime::operator = (const DateTime &in_datetime)
+{
+  this->_year = in_datetime._year;
+  this->_month = in_datetime._month;
+  this->_smonth = std::make_shared<std::string>(*(in_datetime._smonth));
+  this->_dayOfYear = in_datetime._dayOfYear;
+  this->_dayOfMonth = in_datetime._dayOfMonth;
+  this->_hour = in_datetime._hour;
+  this->_minute = in_datetime._minute;
+  this->_second = in_datetime._second;
+  this->_usecond = in_datetime._usecond;
+
+  return *this;
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 bool DateTime::operator == (const DateTime &in_datetime) 
@@ -312,7 +362,7 @@ std::string DateTime::monthString()
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-std::string DateTime::monthName() {return this->_smonth;}
+std::string DateTime::monthName() {return *this->_smonth;}
 
 // ---------------------------------------------------------------------------------------------------------------
 std::string DateTime::dayOfMonthString() 
@@ -358,7 +408,7 @@ std::string DateTime::usecondString() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-std::string DateTime::toIso8061() 
+std::string DateTime::toIso8601() 
 {
   return yearString() + "-" + monthString() + "-" + dayOfMonthString() + "T" +
     hourString() + ":" + minuteString() + ":" + secondString();
@@ -459,16 +509,16 @@ void DateTime::computeDayOfYear()
 // ---------------------------------------------------------------------------------------------------------------
 void DateTime::computeMonthName() 
 {
-  if (this->_month == 1) {this->_smonth = std::string("January");}
-  else if (this->_month == 2) {this->_smonth = std::string("February");}
-  else if (this->_month == 3) {this->_smonth = std::string("March");}
-  else if (this->_month == 4) {this->_smonth = std::string("April");}
-  else if (this->_month == 5) {this->_smonth = std::string("May");}
-  else if (this->_month == 6) {this->_smonth = std::string("June");}
-  else if (this->_month == 7) {this->_smonth = std::string("July");}
-  else if (this->_month == 8) {this->_smonth = std::string("August");}
-  else if (this->_month == 9) {this->_smonth = std::string("September");}
-  else if (this->_month == 10) {this->_smonth = std::string("October");}
-  else if (this->_month == 11) {this->_smonth = std::string("November");}
-  else if (this->_month == 12) {this->_smonth = std::string("December");}
+  if (this->_month == 1) {this->_smonth = std::make_shared<std::string>("January");}
+  else if (this->_month == 2) {this->_smonth = std::make_shared<std::string>("February");}
+  else if (this->_month == 3) {this->_smonth = std::make_shared<std::string>("March");}
+  else if (this->_month == 4) {this->_smonth = std::make_shared<std::string>("April");}
+  else if (this->_month == 5) {this->_smonth = std::make_shared<std::string>("May");}
+  else if (this->_month == 6) {this->_smonth = std::make_shared<std::string>("June");}
+  else if (this->_month == 7) {this->_smonth = std::make_shared<std::string>("July");}
+  else if (this->_month == 8) {this->_smonth = std::make_shared<std::string>("August");}
+  else if (this->_month == 9) {this->_smonth = std::make_shared<std::string>("September");}
+  else if (this->_month == 10) {this->_smonth = std::make_shared<std::string>("October");}
+  else if (this->_month == 11) {this->_smonth = std::make_shared<std::string>("November");}
+  else if (this->_month == 12) {this->_smonth = std::make_shared<std::string>("December");}
 }

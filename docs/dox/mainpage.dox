@@ -34,16 +34,16 @@ To compile and install the FISA library, the CMake (\p http://www.cmake.org) bui
 <h3>Tuning</h3>
 The option "WARNING" in the CMakeLists.txt file allows the printing of consistency information.
 <h3>Under Linux</h3>
-At the root of the project directory, type the following instructions in a command interpreter:
+To keep the project sources tree clean, create a directory named "build" at the root of the project directory and type, in the "build" directory, the following instructions in a command interpreter:
 <list>
-  <item>cmake -DCMAKE_INSTALL_PREFIX="destination path" .</item>
+  <item>cmake -DCMAKE_INSTALL_PREFIX="destination path" ..</item>
   <item>make</item>
   <item>make install</item>
 </list>
-Don't forget the DOT at the end of the first line and replace "destination path" (with quotes) by an existing directory. The examples are put in the subdirectory "bin" of the "destination path", the static library in "lib" and the headers in "include".
+Don't forget the TWO DOT at the end of the first line and replace "destination path" (with quotes) by an existing directory. The examples are put in the subdirectory "bin" of the "destination path", the static library in "lib" and the headers in "include".
 
 <h3>Documentation</h3>
-The documentation in HTML is available in the directory "docs/html" from the file "index.html". It is possible to rebuild the documentation with Doxygen (\p http://www.doxygen.org) by typing "doxygen Doxyfile" in the directory "docs".
+Unzip the "html.zip" file inside the "docs" directory. The documentation in HTML start from the file "index.html" inside the "html" directory previously created. It is possible to rebuild the documentation with Doxygen (\p http://www.doxygen.org) by typing "doxygen Doxyfile" in the directory "docs".
 
 <h2>Tutorials</h2>
 

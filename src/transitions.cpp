@@ -78,12 +78,10 @@ void TimeEvent::at(std::shared_ptr<DateTime> in_date_time, std::shared_ptr<DateT
 // -----------------------------------------------------------------------------------
 bool TimeEvent::init()
 {
-#ifdef GCCTIME_SUPPORT
+#ifdef OPENSOURCE_PLATFORM_TIME
   if (this->_isAfter)
     { 
-      timeval now;
-      gettimeofday(&now, NULL);
-      this->_when = std::make_shared<DateTime>(DateTime(now) + *this->_dateTime);
+      this->_when = std::make_shared<DateTime>(OpenSourceTime::now() + *this->_dateTime);
       return true;
     }
   else
@@ -100,14 +98,12 @@ bool TimeEvent::init()
 // -----------------------------------------------------------------------------------
 bool TimeEvent::happened() const
 {
-#ifdef GCCTIME_SUPPORT
-  timeval now;
-  gettimeofday(&now, NULL);
-  DateTime now_date_time(now);
-  if ((*this->_when <= now_date_time) && (now_date_time <= *this->_when + *this->_exceeding))
+#ifdef OPENSOURCE_PLATFORM_TIME
+  DateTime now(OpenSourceTime::now());
+  if ((*this->_when <= now) && (now <= *this->_when + *this->_exceeding))
     {
 #ifdef DEBUG
-      std::cout << "DEBUG: TimeEvent::happened, now is " << now_date_time.toIso8061() << " and when is " << this->_when->toIso8061() <<
+      std::cout << "DEBUG: TimeEvent::happened, now is " << now.toIso8601() << " and when is " << this->_when->toIso8601() <<
 	"." << std::endl;
 #endif
       return true;
