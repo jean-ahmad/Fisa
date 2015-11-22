@@ -28,19 +28,34 @@ else(DEBUG)
 add_definitions(-UDEBUG)
 endif(DEBUG)
 
+######################################################################
+# Configuration
+######################################################################
+
 include(CheckFunctionExists)
-check_function_exists(gettimeofday GCCTIME)
-if(GCCTIME)
+check_function_exists(gettimeofday GETTIMEOFDAY)
+if(GETTIMEOFDAY)
 add_definitions(-DOPENSOURCE_PLATFORM_TIME)
-else(GCCTIME)
+else(GETTIMEOFDAY)
 add_definitions(-UOPENSOURCE_PLATFORM_TIME)
-endif(GCCTIME)
+endif(GETTIMEOFDAY)
+
+include(CheckLibraryExists)
+check_library_exists(Kernel32 GetSystemTime "windows.h" GETSYSTEMTIME)
+if(GETSYSTEMTIME)
+add_definitions(-DWINDOWS_PLATFORM_TIME)
+else(GETSYSTEMTIME)
+add_definitions(-UWINDOWS_PLATFORM_TIME)
+endif(GETSYSTEMTIME)
+
+cmake_policy(SET CMP0054 NEW)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ansi -Wpedantic -std=c++11 ")
+endif()
 
 ######################################################################
 # Building
 ######################################################################
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ansi -Wpedantic -std=c++11 ")
 
 include_directories ("${PROJECT_SOURCE_DIR}/src")
 

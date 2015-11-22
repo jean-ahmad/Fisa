@@ -47,6 +47,21 @@ DateTime OpenSourceTime::now()
 
 //#########################################################################################################
 /*
+WindowsTime
+*/
+
+#ifdef WINDOWS_PLATFORM_TIME
+// ---------------------------------------------------------------------------------------------------------------
+DateTime WindowsTime::now()
+{
+	SYSTEMTIME now;
+	GetSystemTime(&now);
+	return DateTime(now.wYear, now.wMonth, now.wDay, now.wHour, now.wMinute, now.wSecond, now.wMilliseconds * 1000);
+}
+#endif
+
+//#########################################################################################################
+/*
   DateTime
 */
 

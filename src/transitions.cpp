@@ -78,10 +78,15 @@ void TimeEvent::at(std::shared_ptr<DateTime> in_date_time, std::shared_ptr<DateT
 // -----------------------------------------------------------------------------------
 bool TimeEvent::init()
 {
-#ifdef OPENSOURCE_PLATFORM_TIME
+
+#if defined OPENSOURCE_PLATFORM_TIME || defined WINDOWS_PLATFORM_TIME
   if (this->_isAfter)
     { 
+#ifdef OPENSOURCE_PLATFORM_TIME
       this->_when = std::make_shared<DateTime>(OpenSourceTime::now() + *this->_dateTime);
+#elif WINDOWS_PLATFORM_TIME
+		this->_when = std::make_shared<DateTime>(WindowsTime::now() + *this->_dateTime);
+#endif
       return true;
     }
   else
@@ -98,8 +103,14 @@ bool TimeEvent::init()
 // -----------------------------------------------------------------------------------
 bool TimeEvent::happened() const
 {
+#if defined OPENSOURCE_PLATFORM_TIME || defined WINDOWS_PLATFORM_TIME
+
 #ifdef OPENSOURCE_PLATFORM_TIME
   DateTime now(OpenSourceTime::now());
+#elif WINDOWS_PLATFORM_TIME
+	DateTime now(WindowsTime::now());
+#endif
+
   if ((*this->_when <= now) && (now <= *this->_when + *this->_exceeding))
     {
 #ifdef DEBUG

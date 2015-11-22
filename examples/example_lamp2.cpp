@@ -25,6 +25,8 @@ public:
   {
 #ifdef OPENSOURCE_PLATFORM_TIME
     std::cout << "Lamp is ON at " << OpenSourceTime::now().toIso8601() << std::endl;
+#elif WINDOWS_PLATFORM_TIME
+	  std::cout << "Lamp is ON at " << WindowsTime::now().toIso8601() << std::endl;
 #endif
   }
   // Method called when the machine quit the state "on".
@@ -48,6 +50,8 @@ public:
   {
 #ifdef OPENSOURCE_PLATFORM_TIME
     std::cout << "Lamp is OFF at " << OpenSourceTime::now().toIso8601() << std::endl;
+#elif WINDOWS_PLATFORM_TIME
+	  std::cout << "Lamp is OFF at " << WindowsTime::now().toIso8601() << std::endl;
 #endif
   }
   // Method called when the machine quit the state "off".
@@ -130,7 +134,7 @@ public:
 
 int main(void)
 {
-#ifdef OPENSOURCE_PLATFORM_TIME
+#if defined OPENSOURCE_PLATFORM_TIME || defined WINDOWS_PLATFORM_TIME
   std::cout << "Machine that automatically switch a lamp (2s ON and 1s OFF) during 10s." << std::endl;
 
   // Building of the machine.
@@ -138,7 +142,11 @@ int main(void)
   machine.build();
 
   // Setting the event that trigger transitions to the state "final" at 10s after the beginning.
+#ifdef OPENSOURCE_PLATFORM_TIME 
   DateTime end = OpenSourceTime::now() + DateTime(0, 0, 0, 0, 10, 0);
+#elif WINDOWS_PLATFORM_TIME
+  DateTime end = WindowsTime::now() + DateTime(0, 0, 0, 0, 10, 0);
+#endif
   machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 15, 0));
 
   // Run the machine until the state "final" is reached.

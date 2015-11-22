@@ -41,6 +41,8 @@
 
 namespace fisa
 {
+
+class DateTime;
   
 #ifdef OPENSOURCE_PLATFORM_TIME
 #include <sys/time.h>
@@ -50,7 +52,6 @@ namespace fisa
     OpenSourceTime
   */
   //! Interface to retrieve date and time on some open source systems.
-  class DateTime;
   
   class OpenSourceTime
   {
@@ -61,6 +62,28 @@ namespace fisa
   private:
     OpenSourceTime();
     ~OpenSourceTime();
+  };
+
+#endif
+
+#ifdef WINDOWS_PLATFORM_TIME
+#include <windows.h>
+
+  //#########################################################################################################
+  /*
+  WindowsTime
+  */
+  //! Interface to retrieve date and time on windows systems.
+
+  class WindowsTime
+  {
+  public:
+	  //! Returns system date and time at the moment of the call.
+	  static DateTime now();
+
+  private:
+	  WindowsTime();
+	  ~WindowsTime();
   };
 
 #endif

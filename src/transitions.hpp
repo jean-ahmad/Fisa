@@ -32,10 +32,6 @@
 
 #include "datetime.hpp"
 
-#ifdef OPENSOURCE_PLATFORM_TIME
-#include <sys/time.h>
-#endif
-
 #include <vector>
 #include <map>
 #include <string>
