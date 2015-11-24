@@ -3,10 +3,6 @@
 #include <string>
 #include <memory>
 
-#ifdef OPENSOURCE_PLATFORM_TIME
-#include <sys/time.h>
-#endif
-
 #include <iostream>
 
 
@@ -92,9 +88,9 @@ public:
     // Creation of a "TimeEvent" trigger.
     std::shared_ptr<TimeEvent> trigger1 = std::make_shared<TimeEvent>();
 
-    // Setting the duration before triggering at 2s with a margin of 5ms.
+    // Setting the duration before triggering at 2s with a margin of 200ms.
     // If the machine won't change of state, you must increase the margin.
-    trigger1->after(std::make_shared<DateTime>(0, 0, 0, 0, 2, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 5000));
+    trigger1->after(std::make_shared<DateTime>(0, 0, 0, 0, 2, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 200000));
 
     // Adding a transition from state "on" to state "off" with the trigger defined.
     std::shared_ptr<Transition> t1 = std::make_shared<Transition>("t1", "on", "off");
@@ -110,9 +106,9 @@ public:
     // Creation of a "TimeEvent" trigger.
     std::shared_ptr<TimeEvent> trigger2 = std::make_shared<TimeEvent>();
 
-    // Setting the duration before triggering at 1s with a margin of 5ms.
+    // Setting the duration before triggering at 1s with a margin of 200ms.
     // If the machine won't change of state, you must increase the margin.
-    trigger2->after(std::make_shared<DateTime>(0, 0, 0, 0, 1, 0), std::make_shared<DateTime>(0, 0, 0, 0, 1, 5000));
+    trigger2->after(std::make_shared<DateTime>(0, 0, 0, 0, 1, 0), std::make_shared<DateTime>(0, 0, 0, 0, 1, 200000));
 
     // Adding a transition from state "off" to state "on" with the trigger defined.
     std::shared_ptr<Transition> t3 = std::make_shared<Transition>("t3", "off", "on");
@@ -147,7 +143,7 @@ int main(void)
 #elif WINDOWS_PLATFORM_TIME
   DateTime end = WindowsTime::now() + DateTime(0, 0, 0, 0, 10, 0);
 #endif
-  machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 15, 0));
+  machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 1, 0));
 
   // Run the machine until the state "final" is reached.
   while (machine.activeState("main") != std::string("final"))
