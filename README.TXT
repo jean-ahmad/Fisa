@@ -3,7 +3,7 @@ FInite State Automata library
 #############################
 
 FInite State Automata library has been initially thinked for the interpretation of data transmitted through a network, and for tasks scheduling. The features are:
-- Mutli-platforms.
+- Mutli-platform.
 - A syntax close to the SysML specifications of "State Machines".
 - No limitation in the number of states and transitions that can be used to build a machine.
 - Consistency information such as multiple transitions firing from the same state.
