@@ -1,0 +1,45 @@
+/**
+
+@page tutorials
+<h2>Tutorials</h2>
+
+<list type="bullet">
+  <item>\subpage tutorials_example1 "1. A simple automaton"</item>
+  <item>\subpage tutorials_example2 "2. A simple concurrent system"</item>
+  <item>\subpage tutorials_example3 "3. An automaton with timed events"</item>
+</list>
+
+@page tutorials_example1
+<h3>A simple automaton</h3>
+
+This example show how to model and simulate an automaton for the command of a lamp by using "InitialState" "SimpleState" states, "ChangeEvent" events and "Transition" transitions.
+
+<img src="pictures/examples/example_lamp1.jpeg" alt="example" title="" />
+
+\dontinclude example_lamp1.cpp
+\skip include
+\until // That's all!
+
+@page tutorials_example2
+<h3>A simple concurrent system</h3>
+
+This example show how to model and simulate a concurrent system by using "InitialState" "FinalState" "SimpleState" "CompositeState" states, "ChangeEvent" events, and "Transition" "JoinTransition" "ForkTransition" transition.  
+
+<img src="pictures/examples/example_machine1.jpeg" alt="example" title="" />
+
+\dontinclude example_machine1.cpp
+\skip include
+\until // That's all!
+
+@page tutorials_example3
+<h3>An automaton with timed events</h3>
+
+This example show how to model and simulation an automaton to automatically command a lamp by using "InitialState" "SimpleState" states, "TimeEvent" events and "Transition" transitions.
+
+<img src="pictures/examples/example_lamp2.jpeg" alt="example" title="" />
+
+\dontinclude example_lamp2.cpp
+\skip include
+\until // That's all!
+
+*/

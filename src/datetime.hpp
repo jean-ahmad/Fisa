@@ -42,7 +42,7 @@
 namespace fisa
 {
 
-class DateTime;
+  class DateTime;
   
 #ifdef OPENSOURCE_PLATFORM_TIME
 #include <sys/time.h>
@@ -71,19 +71,19 @@ class DateTime;
 
   //#########################################################################################################
   /*
-  WindowsTime
+    WindowsTime
   */
   //! Interface to retrieve date and time on windows systems.
 
   class WindowsTime
   {
   public:
-	  //! Returns system date and time at the moment of the call.
-	  static DateTime now();
+    //! Returns system date and time at the moment of the call.
+    static DateTime now();
 
   private:
-	  WindowsTime();
-	  ~WindowsTime();
+    WindowsTime();
+    ~WindowsTime();
   };
 
 #endif

@@ -111,7 +111,7 @@ std::shared_ptr<Transition> SimpleState::fireTransition() const
 // -----------------------------------------------------------------------------------
 bool SimpleState::init()
 {
-  for (std::vector<std::shared_ptr<Transition>>::iterator it = this->_transitions.begin(); it != this->_transitions.end(); it++)
+  for (std::vector<std::shared_ptr<Transition> >::iterator it = this->_transitions.begin(); it != this->_transitions.end(); it++)
     if (!(*it)->init())
       {
 	std::cout << "ERROR: SimpleState::init, transition \"" << *((*it)->name()) << "\" can't be initialized." << std::endl;

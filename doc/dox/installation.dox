@@ -1,0 +1,65 @@
+/**
+
+@page installation
+<h2>Installation</h2>
+
+<h3>Requirements</h3>
+To compile and install the FISA library, the CMake (\p http://www.cmake.org) building system is required. It is also necessary that the compiler provides C++11 smart pointers.
+
+<h3>Supported platforms</h3>
+The compilation and installation have been tested on the following platforms:
+<list type="bullet">
+  <item>FreeBSD with the GCC compiler</item>
+  <item>Linux with the GCC compiler</item>
+  <item>Windows with the Visual studio IDE</item>
+</list>
+
+<h3>Tuning</h3>
+Through the installation process, setting the "WARNING" option allows or disallows the printing of consistency information when the machine is running.
+
+<h3>Procedures</h3>
+<list type="bullet">
+  <item>\subpage installation_commandinterpreter "1. Installation procedure by using a command interpreter (example on a Linux platform)."</item>
+  <item>\subpage installation_ide "2. Installation procedure by using an IDE (example on a Windows platform)."</item>
+</list>
+
+<h3>Documentation</h3>
+It is possible to rebuild the documentation with Doxygen (\p http://www.doxygen.org) by typing "doxygen Doxyfile" in the directory "docs".
+
+@page installation_commandinterpreter
+<h3>Installation procedure by using a command interpreter (example on a Linux platform)</h3>
+To keep the sources tree clean, create a directory named "build" at the root of the project location and type, in the "build" directory, the following instructions in a command interpreter:
+<list>
+  <item>cmake -DCMAKE_INSTALL_PREFIX="installation directory" ..</item>
+  <item>make</item>
+  <item>make install</item>
+</list>
+Don't forget the TWO DOT at the end of the first instruction line and replace "installation directory" (with quotes) by an existing directory. The examples are put in the subdirectory "bin" inside the installation directory, the library in "lib" and the headers in "include".
+
+@page installation_ide
+<h3>Installation procedure by using an IDE (example on a Windows platform)</h3>
+
+To keep the sources tree clean, create a directory named "build" at the root of the project location. Launch the CMake application, set "Where is the source code" with the path of the project location and "Where to build the binaries" with the path of the "build" directory previously created, then press on the "Configure" button:
+<img src="pictures/installation/windows/cmake_1.jpg" alt="installation" title="" />
+
+Choose your development environment which depend on the system's architecture, then press on the "Finish" button:
+<img src="pictures/installation/windows/cmake_2.jpg" alt="installation" title="" />
+
+Set the value of the "CMAKE_INSTALL_PREFIX" option with the installation directory path chosen and other options values, then press on the "Configure" button again:
+<img src="pictures/installation/windows/cmake_3.jpg" alt="installation" title="" />
+
+Now press on the "Generate" button:
+<img src="pictures/installation/windows/cmake_4.jpg" alt="installation" title="" />
+
+Open the files explorer and go in the "build" directory created in the project location, then open the "FISA Microsoft Visual Studio Solution":
+<img src="pictures/installation/windows/build_1.jpg" alt="installation" title="" />
+
+Do a mouse right click on the "ALL_BUILD" project and choose "Build" to build the library and the applications, and do the same thing for the "INSTALL" project for the installation:
+<img src="pictures/installation/windows/build_2.jpg" alt="installation" title="" />
+
+If everything went well, the "output" dialog box should display something like this:
+<img src="pictures/installation/windows/build_3.jpg" alt="installation" title="" />
+
+The examples are put in the subdirectory "bin" inside the installation directory, the library in "lib" and the headers in "include".
+
+*/

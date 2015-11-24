@@ -55,6 +55,8 @@ namespace fisa
     bool _transition_firing_allowed; // true;
     bool _is_terminated; // false;
   } RegionInfo;
+
+  class Region;
   
   //#########################################################################################################
   /* 
@@ -67,8 +69,6 @@ namespace fisa
    * starting from the state is fired before the method "effect" of the transition.
    * The class should be inherited and the "entry" and "exit" methods overloaded.
    **/
-
-  class Region;
 
   class SimpleState
   {

@@ -1,0 +1,40 @@
+/**
+@page introduction
+
+<h2>Introduction</h2>
+
+FInite State Automata library has been initially thinked for the interpretation of data transmitted through a network, and for tasks scheduling. The features are:
+<list type="bullet">
+  <item>Mutli-platforms.</item>
+  <item>No limitation in the number of states and transitions that can be used to build a machine.</item>
+  <item>A syntax close to the SysML specifications of "State Machines".</item>
+  <item>Consistency information such as multiple transitions firing from the same state.</item>
+</list>
+  
+<h2>Definitions</h2>
+
+<h3>Machine:</h3>
+<list>
+  <item>A machine is made of many regions. A region is where states and transitions are programmed. The regions in the machine or in "CompositeState" states are concurrent and only one transition can be fired in a region.</item>
+</list>
+<h3>States:</h3>
+<list>
+  <item>"SimpleState" to program an irreducible state in a region. </item>	
+  <item>"InitialState" to program a pseudostate indacating the beginning of a region.</item>
+  <item>"FinalState" to program a pseudostate indicating the ending of a region.</item>
+  <item>"TerminateState" to program a pseudostate indicating the termination of the machine execution.</item>
+    <item>"CompositeState" to program a state in a region and that can have regions inside it.</item>
+</list>
+<h3>Events:</h3>
+<list>
+  <item>"ChangeEvent" to implement a transition triggering by changes of attribute values.</item>
+  <item>"TimeEvent" to implement a transition triggering by the passing of a time duration or the reaching of an absolute time.</item>
+</list>
+<h3>Transitions:</h3>
+<list>
+  <item>"Transition" to program a transition between two states of the machine.</item>
+  <item>"ForkTransition" to program a transition from a state and states in a composite state.</item>
+  <item>"JoinTransition" to program a transition from states in a composite state and a state.</item>
+</list>
+
+*/
