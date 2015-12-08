@@ -61,6 +61,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 add_subdirectory("${PROJECT_SOURCE_DIR}/examples")
+add_subdirectory("${PROJECT_SOURCE_DIR}/tests")
 
 ######################################################################
 # Installation
@@ -68,4 +69,3 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/examples")
 
 file(GLOB HEADERS "src/*.hpp")
 install(FILES ${HEADERS} DESTINATION "include")
-

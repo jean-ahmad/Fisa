@@ -229,6 +229,7 @@ bool DateTime::operator != (const DateTime &in_datetime)
   return !(*this == in_datetime);
 }
 
+#include <iostream>
 // ---------------------------------------------------------------------------------------------------------------
 DateTime DateTime::operator + (const DateTime &in_datetime) 
 {
@@ -243,10 +244,10 @@ DateTime DateTime::operator + (const DateTime &in_datetime)
   else {
   out_usecond = this->_usecond + in_datetime._usecond - 1000000;
   out_second++;}
-  
-  if (this->_second + in_datetime._second <= 59) {out_second = this->_second + in_datetime._second;}
+
+  if (this->_second + in_datetime._second + out_second <= 59) {out_second = this->_second + in_datetime._second + out_second;}
   else {
-    out_second = this->_second + in_datetime._second - 60;
+    out_second = this->_second + in_datetime._second + out_second - 60;
     out_minute++;}
 
   if (this->_minute + in_datetime._minute + out_minute <= 59) {out_minute = this->_minute + in_datetime._minute + out_minute;}

@@ -1,0 +1,22 @@
+/**
+
+@page development
+<h2>Non-regression tests</h2>
+
+<list type="bullet">
+  <item>\subpage test_machine1 "1. Test machine 1"</item>
+  <item>\subpage test_machine2 "1. Test machine 2"</item>
+</list>
+
+@page test_machine1
+<h3>Test machine 1</h3>
+
+<img src="pictures/tests/test_machine1.jpeg" alt="example" title="" />
+
+@page test_machine2
+<h3>Test machine 2</h3>
+
+<img src="pictures/tests/test_machine2.jpeg" alt="example" title="" />
+
+
+*/

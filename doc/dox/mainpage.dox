@@ -8,11 +8,13 @@
   
   <item>\subpage tutorials "3. Tutorials"</item>
 
-  <item><a href="annotated.html">4. API documentation</a>
-  
-  <item>\subpage licensing "5. Licensing"</item>
+  <item><a href="annotated.html">4. API documentation</a></item>
 
-  <item>\subpage contacts "6. Contacts"</item>
+  <item>\subpage development "5. Development"</item>
+  
+  <item>\subpage licensing "6. Licensing"</item>
+
+  <item>\subpage contacts "7. Contacts"</item>
 </list>
 
 

@@ -24,7 +24,7 @@ Through the installation process, setting the "WARNING" option allows or disallo
 </list>
 
 <h3>Documentation</h3>
-It is possible to rebuild the documentation with Doxygen (\p http://www.doxygen.org) by typing "doxygen Doxyfile" in the directory "docs".
+It is possible to rebuild the documentation with Doxygen (\p http://www.doxygen.org) by typing "doxygen Doxyfile" in the directory "doc". After that, copy the directory "pictures" inside the directory "html" created at the previous step.
 
 @page installation_commandinterpreter
 <h3>Installation procedure by using a command interpreter (example on a Linux platform)</h3>
