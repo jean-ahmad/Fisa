@@ -2,7 +2,7 @@
 # Project
 ######################################################################
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 
 project(FISA)
 
@@ -27,6 +27,8 @@ add_definitions(-DDEBUG)
 else(DEBUG)
 add_definitions(-UDEBUG)
 endif(DEBUG)
+
+set(NON_REGRESSION_TESTS OFF CACHE BOOL "Building non-regression tests.")
 
 ######################################################################
 # Configuration

@@ -1,3 +1,4 @@
+if(NON_REGRESSION_TESTS)
 ######################################################################
 # Building
 ######################################################################
@@ -27,3 +28,4 @@ add_test(TestDatetime test_datetime)
 add_test(TestTransitions test_transitions)
 add_test(TestMachine1 test_machine1)
 add_test(TestMachine2 test_machine2)
+endif(NON_REGRESSION_TESTS)
