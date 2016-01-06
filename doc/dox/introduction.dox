@@ -7,7 +7,7 @@ FInite State Automata library has been initially thinked for the interpretation 
 <list type="bullet">
   <item>Mutli-platform.</item>
   <item>No limitation in the number of states and transitions that can be used to build a machine.</item>
-  <item>A syntax close to the SysML specifications of "State Machines".</item>
+  <item>A syntax close to the UML and SysML specifications of "State Machines".</item>
   <item>Consistency information such as multiple transitions firing from the same state.</item>
 </list>
   
@@ -21,7 +21,7 @@ FInite State Automata library has been initially thinked for the interpretation 
 <list>
   <item>"SimpleState" to program an irreducible state in a region. </item>	
   <item>"InitialState" to program a pseudostate indacating the beginning of a region.</item>
-  <item>"FinalState" to program a pseudostate indicating the ending of a region.</item>
+  <item>"FinalState" Class to program a pseudostate indicating that no more transitions can be fired within the region.</item>
   <item>"TerminateState" to program a pseudostate indicating the termination of the machine execution.</item>
     <item>"CompositeState" to program a state in a region and that can have regions inside it.</item>
 </list>
@@ -32,9 +32,9 @@ FInite State Automata library has been initially thinked for the interpretation 
 </list>
 <h3>Transitions:</h3>
 <list>
-  <item>"Transition" to program a transition between two states of the machine.</item>
-  <item>"ForkTransition" to program a transition from a state and states in a composite state.</item>
-  <item>"JoinTransition" to program a transition from states in a composite state and a state.</item>
+  <item>"Transition" to program a transition between two states in a region of a machine.</item>
+  <item>"Fork" to program a pseudostate that act as a transition with one starting state and multiple reachable states.</item>
+  <item>"Join" to program a pseudostate that act as a transition with multiple starting states and one reachable state.</item>
 </list>
 
 */

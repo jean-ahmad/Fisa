@@ -12,8 +12,8 @@ using namespace fisa;
 class LampOn : public SimpleState
 {
 public:
-  // Construction of a state named "on".
-  LampOn() : SimpleState("on")
+  // Construction of a state named "Lamp ON".
+  LampOn() : SimpleState("Lamp ON")
   {}
 
   // Method called when the machine reach the state "on".
@@ -37,8 +37,8 @@ public:
 class LampOff : public SimpleState
 {
 public:
-  // Construction of a state named "off".
-  LampOff() : SimpleState("off")
+  // Construction of a state named "Lamp OFF".
+  LampOff() : SimpleState("Lamp OFF")
   {}
 
   // Method called when the machine reach the state "off".
@@ -61,62 +61,62 @@ public:
 class MyMachine : public Machine
 {
 public:
-  
+  MyMachine() : Machine("Timed lamp machine") {}
   virtual ~MyMachine() {}
 
   // Method to build the machine.
   bool build()
   {
-    // Adding a new region named "main" in the machine.
-    this->newRegion("main");
+    // Adding a new region named "lamp" in the machine.
+    this->newRegion("lamp");
 
-    // Adding an "InitialState" named "initial" in the region "main".
-    this->addState("main", std::make_shared<InitialState>("initial"));
+    // Adding an "InitialState" named "Initial" in the region "lamp" of the machine.
+    this->addState("lamp", std::make_shared<InitialState>("Initial"));
 
-    // Adding the state "on" corresponding to the lamp ON in the region "main".
-    this->addState("main", std::make_shared<LampOn>());
+    // Adding the state "Lamp OFF" corresponding to the lamp OFF in the region "lamp" of the machine.
+    this->addState("lamp", std::make_shared<LampOff>());
 
-    // Adding the state "on" corresponding to the lamp OFF in the region "main".
-    this->addState("main", std::make_shared<LampOff>());
+    // Adding the state "Lamp ON" corresponding to the lamp ON in the region "lamp" of the machine.
+    this->addState("lamp", std::make_shared<LampOn>());
 
-    // Adding a "FinalState" named "final" in the region "main". 
-    this->addState("main", std::make_shared<FinalState>("final"));
+    // Adding a "FinalState" named "Final" in the region "lamp" of the machine. 
+    this->addState("lamp", std::make_shared<FinalState>("Final"));
 
-    // Adding a transtion from the state "initial" to the state "on".
-    this->addTransition(std::make_shared<Transition>("t0", "initial", "on"));
+    // Adding a transtion from the state "Initial" to the state "Lamp OFF".
+    this->addTransition(std::make_shared<Transition>("t0", "Initial", "Lamp OFF"));
 
-    // Creation of a "TimeEvent" trigger.
-    std::shared_ptr<TimeEvent> trigger1 = std::make_shared<TimeEvent>();
+    // Creation of a "TimeEvent" that trigger a transition.
+    auto trigger1 = std::make_shared<TimeEvent>();
 
     // Setting the duration before triggering at 2s with a margin of 200ms.
     // If the machine won't change of state, you must increase the margin.
     trigger1->after(std::make_shared<DateTime>(0, 0, 0, 0, 2, 0), std::make_shared<DateTime>(0, 0, 0, 0, 0, 200000));
 
-    // Adding a transition from state "on" to state "off" with the trigger defined.
-    std::shared_ptr<Transition> t1 = std::make_shared<Transition>("t1", "on", "off");
+    // Adding a transition from state "Lamp OFF" to state "Lamp ON" with the trigger defined.
+    auto t1 = std::make_shared<Transition>("t1", "Lamp OFF", "Lamp ON");
     t1->setTrigger(trigger1);
     this->addTransition(t1);
 
-    // Adding a transition from state "on" to state "final".
-    std::shared_ptr<Transition> t2 = std::make_shared<Transition>("t2", "on", "final");
+    // Adding a transition from state "Lamp OFF" to state "Final".
+    auto t2 = std::make_shared<Transition>("t2", "Lamp OFF", "Final");
     trigger_end = std::make_shared<TimeEvent>();
     t2->setTrigger(trigger_end);
     this->addTransition(t2);
 
-    // Creation of a "TimeEvent" trigger.
-    std::shared_ptr<TimeEvent> trigger2 = std::make_shared<TimeEvent>();
+    // Creation of a "TimeEvent" that trigger a transition.
+    auto trigger2 = std::make_shared<TimeEvent>();
 
     // Setting the duration before triggering at 1s with a margin of 200ms.
     // If the machine won't change of state, you must increase the margin.
     trigger2->after(std::make_shared<DateTime>(0, 0, 0, 0, 1, 0), std::make_shared<DateTime>(0, 0, 0, 0, 1, 200000));
 
-    // Adding a transition from state "off" to state "on" with the trigger defined.
-    std::shared_ptr<Transition> t3 = std::make_shared<Transition>("t3", "off", "on");
+    // Adding a transition from state "Lamp ON" to state "Lamp OFF" with the trigger defined.
+    auto t3 = std::make_shared<Transition>("t3", "Lamp ON", "Lamp OFF");
     t3->setTrigger(trigger2);
     this->addTransition(t3);
 
-    // Adding a transition from state "off" to state "final".
-    std::shared_ptr<Transition> t4 = std::make_shared<Transition>("t4", "off", "final");
+    // Adding a transition from state "Lamp ON" to state "Final".
+    auto t4 = std::make_shared<Transition>("t4", "Lamp ON", "Final");
     t4->setTrigger(trigger_end);
     this->addTransition(t4);
   
@@ -131,22 +131,23 @@ public:
 int main(void)
 {
 #if defined OPENSOURCE_PLATFORM_TIME || defined WINDOWS_PLATFORM_TIME
-  std::cout << "Machine that automatically switch a lamp (2s ON and 1s OFF) during 10s." << std::endl;
-
+  
   // Building of the machine.
   MyMachine machine;
   machine.build();
 
-  // Setting the event that trigger transitions to the state "final" at 10s after the beginning.
+  // Setting the event that trigger transitions to the state "Final" at 10s after the beginning.
 #ifdef OPENSOURCE_PLATFORM_TIME 
-  DateTime end = OpenSourceTime::now() + DateTime(0, 0, 0, 0, 10, 0);
+  auto end = OpenSourceTime::now() + DateTime(0, 0, 0, 0, 10, 0);
 #elif WINDOWS_PLATFORM_TIME
-  DateTime end = WindowsTime::now() + DateTime(0, 0, 0, 0, 10, 0);
+  auto end = WindowsTime::now() + DateTime(0, 0, 0, 0, 10, 0);
 #endif
   machine.trigger_end->at(std::make_shared<DateTime>(end), std::make_shared<DateTime>(0, 0, 0, 0, 1, 0));
 
-  // Run the machine until the state "final" is reached.
-  while (machine.activeState("main") != std::string("final"))
+  std::cout << "Automaton that automatically switches a lamp (2s OFF and 1s ON) during 10s." << std::endl << std::endl;
+
+  // Run the machine until the state "Final" is reached.
+  while (machine.activeState("lamp") != std::string("Final"))
     {
       machine.run();
     }
@@ -155,4 +156,5 @@ int main(void)
 #endif
   
   return 0;
+  
 } // That's all!

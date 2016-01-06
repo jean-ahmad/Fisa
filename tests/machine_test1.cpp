@@ -246,8 +246,8 @@ public:
 
 class MyMachine : public Machine
 {
-public:
-  
+public:  
+  MyMachine(const char *in_machine_name) : Machine(in_machine_name) {}  
   virtual ~MyMachine() {}
   
   bool build();
@@ -273,164 +273,164 @@ bool MyMachine::build()
   this->newRegion("main");
 
   // States in region "main":
-  std::shared_ptr<InitialState> initial = std::make_shared<InitialState>("initial");
+  auto initial = std::make_shared<InitialState>("initial");
   this->addState("main", initial);
-  std::shared_ptr<CompositeState> state1 = std::make_shared<CompositeState>("state1");
+  auto state1 = std::make_shared<CompositeState>("state1");
   this->addState("main", state1);
-  std::shared_ptr<FinalState> final = std::make_shared<FinalState>("final");
+  auto final = std::make_shared<FinalState>("final");
   this->addState("main", final);
   
   // Transitions in region "main":
-  std::shared_ptr<Transition> transition_initial_state1 = std::make_shared<Transition>("initial_to_state1", "initial", "state1");
+  auto transition_initial_state1 = std::make_shared<Transition>("initial_to_state1", "initial", "state1");
   this->addTransition(transition_initial_state1);
   
-  std::shared_ptr<Transition> transition_state1_final = std::make_shared<Transition>("state1_to_final", "state1", "final");
+  auto transition_state1_final = std::make_shared<Transition>("state1_to_final", "state1", "final");
   this->_trigger_state1_final = std::make_shared<EventState1Final>();
   transition_state1_final->setTrigger(this->_trigger_state1_final);
   this->addTransition(transition_state1_final);
   
   // States in region "sub1" of state "state1" in region "main":
   state1->newRegion("sub1");
-  std::shared_ptr<InitialState> sub1initial = std::make_shared<InitialState>("sub1_initial");
+  auto sub1initial = std::make_shared<InitialState>("sub1_initial");
   this->addState("sub1", sub1initial);
-  std::shared_ptr<CompositeState> sub1state1 = std::make_shared<CompositeState>("sub1_state1");
+  auto sub1state1 = std::make_shared<CompositeState>("sub1_state1");
   this->addState("sub1", sub1state1);
-  std::shared_ptr<SimpleState> sub1state2 = std::make_shared<SimpleState>("sub1_state2");
+  auto sub1state2 = std::make_shared<SimpleState>("sub1_state2");
   this->addState("sub1", sub1state2);
-  std::shared_ptr<FinalState> sub1final = std::make_shared<FinalState>("sub1_final");
+  auto sub1final = std::make_shared<FinalState>("sub1_final");
   this->addState("sub1", sub1final);
   
   // Transitions in region "sub1" of state "state1" in region "main":
-  std::shared_ptr<Transition> transition_sub1initial_sub1state1 = std::make_shared<Transition>("sub1initial_to_sub1state1", "sub1_initial", "sub1_state1");
+  auto transition_sub1initial_sub1state1 = std::make_shared<Transition>("sub1initial_to_sub1state1", "sub1_initial", "sub1_state1");
   this->addTransition(transition_sub1initial_sub1state1);
   
-  std::shared_ptr<Transition> transition_sub1state1_sub1state2 = std::make_shared<Transition>("sub1state1_to_sub1state2", "sub1_state1", "sub1_state2");
+  auto transition_sub1state1_sub1state2 = std::make_shared<Transition>("sub1state1_to_sub1state2", "sub1_state1", "sub1_state2");
   this->_trigger_sub1state1_sub1state2 = std::make_shared<EventSub1state1Sub1State2>();
   transition_sub1state1_sub1state2->setTrigger(this->_trigger_sub1state1_sub1state2);
   this->addTransition(transition_sub1state1_sub1state2);
 
-  std::shared_ptr<Transition> transition_sub1state2_sub1state1 = std::make_shared<Transition>("sub1state2_to_sub1state1", "sub1_state2", "sub1_state1");
+  auto transition_sub1state2_sub1state1 = std::make_shared<Transition>("sub1state2_to_sub1state1", "sub1_state2", "sub1_state1");
   this->_trigger_sub1state2_sub1state1 = std::make_shared<EventSub1state2Sub1State1>();
   transition_sub1state2_sub1state1->setTrigger(this->_trigger_sub1state2_sub1state1);
   this->addTransition(transition_sub1state2_sub1state1);
 
-  std::shared_ptr<Transition> transition_sub1state2_sub1final = std::make_shared<Transition>("sub1state2_to_sub1final", "sub1_state2", "sub1_final");
+  auto transition_sub1state2_sub1final = std::make_shared<Transition>("sub1state2_to_sub1final", "sub1_state2", "sub1_final");
   this->_trigger_sub1state2_sub1final = std::make_shared<EventSub1state2Sub1Final>();
   transition_sub1state2_sub1final->setTrigger(this->_trigger_sub1state2_sub1final);
   this->addTransition(transition_sub1state2_sub1final);
   
   // States in region "sub2" of state "state1" in region "main":
   state1->newRegion("sub2");
-  std::shared_ptr<InitialState> sub2initial = std::make_shared<InitialState>("sub2_initial");
+  auto sub2initial = std::make_shared<InitialState>("sub2_initial");
   this->addState("sub2", sub2initial);
-  std::shared_ptr<SimpleState> sub2state1 = std::make_shared<SimpleState>("sub2_state1");
+  auto sub2state1 = std::make_shared<SimpleState>("sub2_state1");
   this->addState("sub2", sub2state1);
-  std::shared_ptr<CompositeState> sub2state2 = std::make_shared<CompositeState>("sub2_state2");
+  auto sub2state2 = std::make_shared<CompositeState>("sub2_state2");
   this->addState("sub2", sub2state2);
-  std::shared_ptr<FinalState> sub2final = std::make_shared<FinalState>("sub2_final");
+  auto sub2final = std::make_shared<FinalState>("sub2_final");
   this->addState("sub2", sub2final);
 
   // Transitions in region "sub2" of state "state1" in region "main":
-  std::shared_ptr<Transition> transition_sub2initial_sub2state1 = std::make_shared<Transition>("sub2intial_to_sub2state1", "sub2_initial", "sub2_state1");
+  auto transition_sub2initial_sub2state1 = std::make_shared<Transition>("sub2intial_to_sub2state1", "sub2_initial", "sub2_state1");
   this->addTransition(transition_sub2initial_sub2state1);
   
-  std::shared_ptr<Transition> transition_sub2state1_sub2state2 = std::make_shared<Transition>("sub2state1_to_sub2state2", "sub2_state1", "sub2_state2");
+  auto transition_sub2state1_sub2state2 = std::make_shared<Transition>("sub2state1_to_sub2state2", "sub2_state1", "sub2_state2");
   this->_trigger_sub2state1_sub2state2 = std::make_shared<EventSub2state1Sub2State2>();
   transition_sub2state1_sub2state2->setTrigger(this->_trigger_sub2state1_sub2state2);
   this->addTransition(transition_sub2state1_sub2state2);
 
-  std::shared_ptr<Transition> transition_sub2state2_sub2final = std::make_shared<Transition>("sub2state2_to_sub2final", "sub2_state2", "sub2_final");
+  auto transition_sub2state2_sub2final = std::make_shared<Transition>("sub2state2_to_sub2final", "sub2_state2", "sub2_final");
   this->_trigger_sub2state2_sub2final = std::make_shared<EventSub2state2Sub2Final>();
   transition_sub2state2_sub2final->setTrigger(this->_trigger_sub2state2_sub2final);
   this->addTransition(transition_sub2state2_sub2final);
 
   // States in region "sub3" of state "state1" in region "sub1" of state "state1" in region "main":
   sub1state1->newRegion("sub3");
-  std::shared_ptr<InitialState> sub3initial = std::make_shared<InitialState>("sub3_initial");
+  auto sub3initial = std::make_shared<InitialState>("sub3_initial");
   this->addState("sub3", sub3initial);
-  std::shared_ptr<SimpleState> sub3state1 = std::make_shared<SimpleState>("sub3_state1");
+  auto sub3state1 = std::make_shared<SimpleState>("sub3_state1");
   this->addState("sub3", sub3state1);
-  std::shared_ptr<FinalState> sub3final = std::make_shared<FinalState>("sub3_final");
+  auto sub3final = std::make_shared<FinalState>("sub3_final");
   this->addState("sub3", sub3final);
 
   // Transitions in region "sub3" of state "state1" in region "sub1" of state "state1" in region "main":
-  std::shared_ptr<Transition> transition_sub3initial_sub3state1 = std::make_shared<Transition>("sub3initial_to_sub3state1", "sub3_initial", "sub3_state1");
+  auto transition_sub3initial_sub3state1 = std::make_shared<Transition>("sub3initial_to_sub3state1", "sub3_initial", "sub3_state1");
   this->addTransition(transition_sub3initial_sub3state1);
 
-  std::shared_ptr<Transition> transition_sub3state1_sub3final = std::make_shared<Transition>("sub3state1_to_sub3final", "sub3_state1", "sub3_final");
+  auto transition_sub3state1_sub3final = std::make_shared<Transition>("sub3state1_to_sub3final", "sub3_state1", "sub3_final");
   this->_trigger_sub3state1_sub3final = std::make_shared<EventSub3state1Sub3Final>();
   transition_sub3state1_sub3final->setTrigger(this->_trigger_sub3state1_sub3final);
   this->addTransition(transition_sub3state1_sub3final);
 
   // States in region "sub4" of state "state1" in region "sub1" of state "state1" in region "main":
   sub1state1->newRegion("sub4");
-  std::shared_ptr<InitialState> sub4initial = std::make_shared<InitialState>("sub4_initial");
+  auto sub4initial = std::make_shared<InitialState>("sub4_initial");
   this->addState("sub4", sub4initial);
-  std::shared_ptr<SimpleState> sub4state1 = std::make_shared<SimpleState>("sub4_state1");
+  auto sub4state1 = std::make_shared<SimpleState>("sub4_state1");
   this->addState("sub4", sub4state1);
-  std::shared_ptr<SimpleState> sub4state2 = std::make_shared<SimpleState>("sub4_state2");
+  auto sub4state2 = std::make_shared<SimpleState>("sub4_state2");
   this->addState("sub4", sub4state2);
-  std::shared_ptr<FinalState> sub4final = std::make_shared<FinalState>("sub4_final");
+  auto sub4final = std::make_shared<FinalState>("sub4_final");
   this->addState("sub4", sub4final);
 
   // Transitions in region "sub4" of state "state1" in region "sub1" of state "state1" in region "main":
-  std::shared_ptr<Transition> transition_sub4initial_sub4state1 = std::make_shared<Transition>("sub4initial_to_sub4final", "sub4_initial", "sub4_state1");
+  auto transition_sub4initial_sub4state1 = std::make_shared<Transition>("sub4initial_to_sub4final", "sub4_initial", "sub4_state1");
   this->addTransition(transition_sub4initial_sub4state1);
   
-  std::shared_ptr<Transition> transition_sub4state1_sub4state2 = std::make_shared<Transition>("sub4state1_to_sub4state2", "sub4_state1", "sub4_state2");
+  auto transition_sub4state1_sub4state2 = std::make_shared<Transition>("sub4state1_to_sub4state2", "sub4_state1", "sub4_state2");
   this->_trigger_sub4state1_sub4state2 = std::make_shared<EventSub4state1Sub4State2>();
   transition_sub4state1_sub4state2->setTrigger(this->_trigger_sub4state1_sub4state2);
   this->addTransition(transition_sub4state1_sub4state2);
 
-  std::shared_ptr<Transition> transition_sub4state2_sub4final = std::make_shared<Transition>("sub4state2_to_sub4final", "sub4_state2", "sub4_final");
+  auto transition_sub4state2_sub4final = std::make_shared<Transition>("sub4state2_to_sub4final", "sub4_state2", "sub4_final");
   this->_trigger_sub4state2_sub4final = std::make_shared<EventSub4state2Sub4Final>();
   transition_sub4state2_sub4final->setTrigger(this->_trigger_sub4state2_sub4final);
   this->addTransition(transition_sub4state2_sub4final);
-
+  
   // States in region "sub5" of state "state2" in region "sub2" of state "state1" in region "main":
   sub2state2->newRegion("sub5");
-  std::shared_ptr<InitialState> sub5initial = std::make_shared<InitialState>("sub5_initial");
+  auto sub5initial = std::make_shared<InitialState>("sub5_initial");
   this->addState("sub5", sub5initial);
-  std::shared_ptr<SimpleState> sub5state1 = std::make_shared<SimpleState>("sub5_state1");
+  auto sub5state1 = std::make_shared<SimpleState>("sub5_state1");
   this->addState("sub5", sub5state1);
-  std::shared_ptr<SimpleState> sub5state2 = std::make_shared<SimpleState>("sub5_state2");
+  auto sub5state2 = std::make_shared<SimpleState>("sub5_state2");
   this->addState("sub5", sub5state2);
-  std::shared_ptr<FinalState> sub5final = std::make_shared<FinalState>("sub5_final");
+  auto sub5final = std::make_shared<FinalState>("sub5_final");
   this->addState("sub5", sub5final);
 
   // Transitions in region "sub5" of state "state2" in region "sub2" of state "state1" in region "main":
-  std::shared_ptr<Transition> transition_sub5initial_sub5state1 = std::make_shared<Transition>("sub5initial_to_sub5state1", "sub5_initial", "sub5_state1");
+  auto transition_sub5initial_sub5state1 = std::make_shared<Transition>("sub5initial_to_sub5state1", "sub5_initial", "sub5_state1");
   this->addTransition(transition_sub5initial_sub5state1);
   
-  std::shared_ptr<Transition> transition_sub5state1_sub5state2 = std::make_shared<Transition>("sub5state1_to_su5state2", "sub5_state1", "sub5_state2");
+  auto transition_sub5state1_sub5state2 = std::make_shared<Transition>("sub5state1_to_su5state2", "sub5_state1", "sub5_state2");
   this->_trigger_sub5state1_sub5state2 = std::make_shared<EventSub5state1Sub5State2>();
   transition_sub5state1_sub5state2->setTrigger(this->_trigger_sub5state1_sub5state2);
   this->addTransition(transition_sub5state1_sub5state2);
 
-  std::shared_ptr<Transition> transition_sub5state2_sub5state1 = std::make_shared<Transition>("sub5state2_to_sub5state1", "sub5_state2", "sub5_state1");
+  auto transition_sub5state2_sub5state1 = std::make_shared<Transition>("sub5state2_to_sub5state1", "sub5_state2", "sub5_state1");
   this->_trigger_sub5state2_sub5state1 = std::make_shared<EventSub5state2Sub5State1>();
   transition_sub5state2_sub5state1->setTrigger(this->_trigger_sub5state2_sub5state1);
   this->addTransition(transition_sub5state2_sub5state1);
 
-  std::shared_ptr<Transition> transition_sub5state2_sub5final = std::make_shared<Transition>("sub5state2_to_sub5final", "sub5_state2", "sub5_final");
+  auto transition_sub5state2_sub5final = std::make_shared<Transition>("sub5state2_to_sub5final", "sub5_state2", "sub5_final");
   this->_trigger_sub5state2_sub5final = std::make_shared<EventSub5state2Sub5Final>();
   transition_sub5state2_sub5final->setTrigger(this->_trigger_sub5state2_sub5final);
   this->addTransition(transition_sub5state2_sub5final);
   
   // States in region "sub6" of state "state2" in region "sub2" of state "state1" in region "main":
   sub2state2->newRegion("sub6");
-  std::shared_ptr<InitialState> sub6initial = std::make_shared<InitialState>("sub6_initial");
+  auto sub6initial = std::make_shared<InitialState>("sub6_initial");
   this->addState("sub6", sub6initial);
-  std::shared_ptr<SimpleState> sub6state1 = std::make_shared<SimpleState>("sub6_state1");
+  auto sub6state1 = std::make_shared<SimpleState>("sub6_state1");
   this->addState("sub6", sub6state1);
-  std::shared_ptr<FinalState> sub6final = std::make_shared<FinalState>("sub6_final");
+  auto sub6final = std::make_shared<FinalState>("sub6_final");
   this->addState("sub6", sub6final);
 
   // Transitions in region "sub6" of state "state2" in region "sub2" of state "state1" on region "main":
-  std::shared_ptr<Transition> transition_sub6initial_sub6state1 = std::make_shared<Transition>("sub6final_to_sub6state1", "sub6_initial", "sub6_state1");
+  auto transition_sub6initial_sub6state1 = std::make_shared<Transition>("sub6final_to_sub6state1", "sub6_initial", "sub6_state1");
   this->addTransition(transition_sub6initial_sub6state1);
 
-  std::shared_ptr<Transition> transition_sub6state1_sub6final = std::make_shared<Transition>("sub6state1_to_sub6final", "sub6_state1", "sub6_final");
+  auto transition_sub6state1_sub6final = std::make_shared<Transition>("sub6state1_to_sub6final", "sub6_state1", "sub6_final");
   this->_trigger_sub6state1_sub6final = std::make_shared<EventSub6state1Sub6Final>();
   transition_sub6state1_sub6final->setTrigger(this->_trigger_sub6state1_sub6final);
   this->addTransition(transition_sub6state1_sub6final);
@@ -443,7 +443,7 @@ bool MyMachine::build()
 
 int main(int argv, char **args)
 {
-  MyMachine test;
+  MyMachine test("machine");
 
 #ifdef DEBUG
   std::cout << "Building machine." << std::endl;
@@ -456,7 +456,7 @@ int main(int argv, char **args)
   // Initial
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, initial run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, initial run failed." << std::endl;
       return -1;
     }
 
@@ -488,7 +488,7 @@ int main(int argv, char **args)
   test._trigger_sub2state1_sub2state2->switching("c", false);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 2 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 2 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -523,7 +523,7 @@ int main(int argv, char **args)
   test._trigger_state1_final->switching("c", false);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 3 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 3 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -558,7 +558,7 @@ int main(int argv, char **args)
   test._trigger_sub4state2_sub4final->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 4 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 4 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -594,7 +594,7 @@ int main(int argv, char **args)
   test._trigger_sub5state2_sub5state1->switching("c", false);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 5 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 5 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -625,7 +625,7 @@ int main(int argv, char **args)
   test._trigger_sub1state2_sub1state1->switching("c", false);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 6 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 6 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -659,7 +659,7 @@ int main(int argv, char **args)
   test._trigger_sub5state1_sub5state2->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 7 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 7 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -693,7 +693,7 @@ int main(int argv, char **args)
   test._trigger_sub4state2_sub4final->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 8 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 8 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -726,7 +726,7 @@ int main(int argv, char **args)
   test._trigger_sub1state1_sub1state2->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 9 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 9 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -762,7 +762,7 @@ int main(int argv, char **args)
   test._trigger_sub6state1_sub6final->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 10 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 10 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -798,7 +798,7 @@ int main(int argv, char **args)
   test._trigger_sub2state2_sub2final->switching("c", true);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 11 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 11 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("state1") ||
@@ -828,7 +828,7 @@ int main(int argv, char **args)
   test._trigger_state1_final->switching("c", false);
   if (!test.run())
     {
-      std::cout << "ERROR: test_machine1, test 12 run failed." << std::endl;
+      std::cout << "ERROR: machine_test1, test 12 run failed." << std::endl;
       return -1;
     }
   if (test.activeState("main") != std::string("final") ||

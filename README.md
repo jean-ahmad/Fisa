@@ -1,11 +1,13 @@
 
-# FInite State Automata library (version 1.0.0)
+# FInite State Automata library
 
 FInite State Automata library has been initially thinked for the interpretation of data transmitted through a network, and for tasks scheduling. The features are:
 - Mutli-platform.
-- A syntax close to the SysML specifications of "State Machines".
+- A syntax close to the UML and SysML specifications of "State Machines".
 - No limitation in the number of states and transitions that can be used to build a machine.
 - Consistency information such as multiple transitions firing from the same state.
+
+The latest stable release is "version 1.1.0".
 
 ## Documentation
 

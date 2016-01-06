@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.1)
 project(FISA)
 
 set(FISA_VERSION_MAJOR "1")
-set(FISA_VERSION_MINOR "0")
+set(FISA_VERSION_MINOR "1")
 set(FISA_VERSION_PATCH "0")
 
 ######################################################################
@@ -28,7 +28,9 @@ else(DEBUG)
 add_definitions(-UDEBUG)
 endif(DEBUG)
 
-set(NON_REGRESSION_TESTS OFF CACHE BOOL "Building non-regression tests.")
+set(EXAMPLES ON CACHE BOOL "Building of examples.")
+
+set(NON_REGRESSION_TESTS OFF CACHE BOOL "Building of non-regression tests.")
 
 ######################################################################
 # Configuration

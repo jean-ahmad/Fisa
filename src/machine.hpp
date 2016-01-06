@@ -32,6 +32,7 @@
 #include "transitions.hpp"
 #include "states.hpp"
 
+#include <utility> // move
 #include <memory>
 
 namespace fisa
@@ -40,69 +41,83 @@ namespace fisa
   /* 
      Machine
   */
-  //! Class for the modeling and the simulation of automata or concurrent systems.
+  //! Class to build and simulate automata.
   /**
-   * A machine is made of many regions. A region is where states and transitions are programmed.
-   * The regions in the machine or in "CompositeState" states are concurrent and only one 
-   * transition can be fired in a region.
-   * The class must be inherited and the method "build" overloaded to program the machine. 
+   * A machine is made of many regions which contain states and transitions.
+   * The class must be inherited and the method "build" overloaded to create automata. 
+   * To program the machine, the methods "newRegion", "addState", "addTransition", "addJoin", 
+   * "addFork", and "addSubmachine" should be used.
    **/
 
-  class Machine
+  class Machine : private RegionsComponent
   {
   public:    
-    //! Constructor.
-    Machine();
+    //! Construct of machine with name specified in input argument.
+    Machine(const char *in_machine_name);
 
-    //! \private
+    //! Destructor.
     virtual ~Machine();
 
-    //! This method must be overloaded to put instructions that program the machine.
+    //! This method must be overloaded to program the machine.
     virtual bool build() = 0;
 
-    //! Changes states of the machine.
-    /** 
-     * Once builded, the method should be called for the initialization of machine.
-     * Each time it is called, the method check reception of events that fire transitions and 
-     * changes states consequently.
+    //! Returns the name of the machine.
+    std::shared_ptr<std::string> name() const;
+
+    //! Returns regions, that contain states and transitions, of the machine as a RegionComponent object.
+    /**
+     * The machine is left empty after calling this method.
      **/
-    bool run();
-    
-    //! Returns the name of the state that is active within the region given in argument.
-    //** If the region has no active state, the method returns an empty string. **/
+    RegionsComponent regionsComponent();
+
+    //! Returns the name of the state that is active within the region specified in input argument.
+    /**
+     * Returns an empty string if the Region has no active state.
+     **/
     std::string activeState(const char *in_region_name) const;
+
+    //! The method checks, each time it is called, fired transitions and changes machine's regions active state consequently.
+    bool run();
 
   protected: 
     //! Adding a new region within the machine.
-    /** This method should be used to build the machine. **/
+    /**
+     * See also Region.
+     **/
     void newRegion(const char *in_region_name);
 
-    //! Adding a state in the machine.
-    /** This method should be used to build the machine. **/
+    //! Adding a state within a region of the machine.
+    /**
+     * See also SimpleState, InitialState, FinalState, TerminateState and CompositeState.
+     **/
     bool addState(const char *in_region_name, std::shared_ptr<SimpleState> in_state);
 
-    //! Adding a transition in the machine.
-    /** This method should be used to build the machine. **/
+    //! Adding a transition within a region of the machine.
     bool addTransition(std::shared_ptr<Transition> in_transition);
 
-    //! Adding a join transition in the machine.
-    /** This method should be used to build the machine. **/
-    bool addJoin(const char *in_outermost_starting_state_name, std::shared_ptr<JoinTransition> in_join);
+    //! Adding a join compound transition within the machine.
+    bool addJoin(const char *in_outermost_starting_state_name, std::shared_ptr<Join> in_join);
 
-    //! Adding a fork transition in the machine.
-    /** This method should be used to build the machine. **/
-    bool addFork(const char *in_outermost_reachable_state_name, std::shared_ptr<ForkTransition> in_fork);
+    //! Adding a fork compound transition within the machine.
+    bool addFork(const char *in_outermost_reachable_state_name, std::shared_ptr<Fork> in_fork);
+    
+    //! Adding a submachine within a region of the machine.
+    /**
+     * The Machine specified in input argument must contains a least one Region with states and transitions 
+     * inside it. The Machine specified in input argument is left empty after calling this method.
+     **/
+    bool addSubmachine(const char *in_region_name, Machine &in_machine);
 
-  private:
-    //! \private
-    std::shared_ptr<Region> findRegion(std::shared_ptr<std::string> in_region_name) const;
-
-    //! \private
+  private:    
+    //! Specializes RegionsComponent's "findRegion" method.
+    std::shared_ptr<Region> findRegion(std::shared_ptr<std::string> in_region_name) const;    
+    
+    //! Specializes RegionsComponent's "findState" method.
     std::shared_ptr<SimpleState> findState(std::shared_ptr<std::string> in_state_name) const;
     
     bool _isInitiated;
     bool _isTerminated;
-    std::vector<std::shared_ptr<Region> > _regions;
+    std::shared_ptr<std::string> _machineName;
   };
 }
 

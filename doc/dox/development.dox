@@ -3,20 +3,26 @@
 @page development
 <h2>Non-regression tests</h2>
 
-<list type="bullet">
-  <item>\subpage test_machine1 "1. Test machine 1"</item>
-  <item>\subpage test_machine2 "1. Test machine 2"</item>
+<list type="number">
+  <item>\subpage machine_test1 "Machine test 1"</item>
+  <item>\subpage machine_test2 "Machine test 2"</item>
+  <item>\subpage machine_test3 "Machine test 3"</item>
 </list>
 
-@page test_machine1
-<h3>Test machine 1</h3>
+@page machine_test1
+<h3>Machine test 1</h3>
 
-<img src="pictures/tests/test_machine1.jpeg" alt="example" title="" />
+<img src="pictures/tests/machine_test1.jpeg" alt="example" title="" />
 
-@page test_machine2
-<h3>Test machine 2</h3>
+@page machine_test2
+<h3>Machine test 2</h3>
 
-<img src="pictures/tests/test_machine2.jpeg" alt="example" title="" />
+<img src="pictures/tests/machine_test2.jpeg" alt="example" title="" />
+
+@page machine_test3
+<h3>Machine test 3</h3>
+
+<img src="pictures/tests/machine_test3.jpeg" alt="example" title="" />
 
 
 */

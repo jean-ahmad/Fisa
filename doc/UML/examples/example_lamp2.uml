@@ -62,7 +62,7 @@
 			CodeGeneration
 		</plugin>
 </profile>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sat Dec 05 17:26:37 GMT 2015'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Tue Jan 05 14:47:26 GMT 2016'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -80,7 +80,7 @@
               name = 'top' isSpecification = 'false' isConcurrent = 'false'>
               <UML:CompositeState.subvertex>
                 <UML:SimpleState xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:0000000000000868'
-                  name = 'on' isSpecification = 'false'>
+                  name = 'Lamp OFF' isSpecification = 'false'>
                   <UML:StateVertex.outgoing>
                     <UML:Transition xmi.idref = '-64--88-0-1--36f402ff:1517316006e:-8000:0000000000001501'/>
                     <UML:Transition xmi.idref = '-64--88-0-1--36f402ff:1517316006e:-8000:0000000000001503'/>
@@ -93,14 +93,14 @@
                     <UML:CallAction xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:0000000000000896'
                       name = '' isSpecification = 'false' isAsynchronous = 'false'>
                       <UML:Action.script>
-                        <UML:ActionExpression xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:00000000000008B8'
-                          language = '' body = 'print(Lamp is ON.)'/>
+                        <UML:ActionExpression xmi.id = '-64--88-0-1-752891d:1521226ab2e:-8000:0000000000000C8A'
+                          language = '' body = 'print(Lamp is OFF.)'/>
                       </UML:Action.script>
                     </UML:CallAction>
                   </UML:State.entry>
                 </UML:SimpleState>
                 <UML:SimpleState xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:0000000000000869'
-                  name = 'off' isSpecification = 'false'>
+                  name = 'Lamp ON' isSpecification = 'false'>
                   <UML:StateVertex.outgoing>
                     <UML:Transition xmi.idref = '-64--88-0-1--36f402ff:1517316006e:-8000:0000000000001502'/>
                     <UML:Transition xmi.idref = '-64--88-0-1--36f402ff:1517316006e:-8000:0000000000001504'/>
@@ -112,8 +112,8 @@
                     <UML:CallAction xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:00000000000008B9'
                       name = '' isSpecification = 'false' isAsynchronous = 'false'>
                       <UML:Action.script>
-                        <UML:ActionExpression xmi.id = '-64--88-0-1--63f392ce:150df15e87d:-8000:00000000000008D8'
-                          language = '' body = 'print(Lamp is OFF.)'/>
+                        <UML:ActionExpression xmi.id = '-64--88-0-1-752891d:1521226ab2e:-8000:0000000000000C8B'
+                          language = '' body = 'print(Lamp is ON.)'/>
                       </UML:Action.script>
                     </UML:CallAction>
                   </UML:State.entry>
@@ -320,7 +320,7 @@
       bold="false"
       textsize="12"
       justification="Center"
-    >on</text>
+    >Lamp OFF</text>
     <path name="Fig0.3"
       description="org.tigris.gef.presentation.FigLine"
       fill="1"
@@ -348,7 +348,7 @@
       bold="false"
       textsize="12"
       justification="Left"
-    >entry /print(Lamp is ON.)</text>
+    >entry /print(Lamp is OFF.)</text>
   </group>
   <group name="Fig1"
        description="org.argouml.uml.diagram.state.ui.FigSimpleState[792, 192, 192, 104]pathVisible=false;stereotypeView=0;"
@@ -398,7 +398,7 @@
       bold="false"
       textsize="12"
       justification="Center"
-    >off</text>
+    >Lamp ON</text>
     <path name="Fig1.3"
       description="org.tigris.gef.presentation.FigLine"
       fill="1"
@@ -426,7 +426,7 @@
       bold="false"
       textsize="12"
       justification="Left"
-    >entry /print(Lamp is OFF.)</text>
+    >entry /print(Lamp is ON.)</text>
   </group>
   <group name="Fig2"
        description="org.argouml.uml.diagram.state.ui.FigInitialState[288, 232, 16, 16]pathVisible=false;stereotypeView=0;"
@@ -552,7 +552,7 @@
                         offset="105" />
     </private>
     <path name="Fig5.0"
-      description="org.tigris.gef.presentation.FigPoly"
+      description="org.argouml.gefext.ArgoFigPoly"
       fill="0"
       fillcolor="white"
       stroke="1"
@@ -583,7 +583,7 @@
                         offset="112" />
     </private>
     <path name="Fig6.0"
-      description="org.tigris.gef.presentation.FigPoly"
+      description="org.argouml.gefext.ArgoFigPoly"
       fill="0"
       fillcolor="white"
       stroke="1"
@@ -614,7 +614,7 @@
                         offset="10" />
     </private>
     <path name="Fig7.0"
-      description="org.tigris.gef.presentation.FigPoly"
+      description="org.argouml.gefext.ArgoFigPoly"
       fill="0"
       fillcolor="white"
       stroke="1"
@@ -645,7 +645,7 @@
                         offset="10" />
     </private>
     <path name="Fig8.0"
-      description="org.tigris.gef.presentation.FigPoly"
+      description="org.argouml.gefext.ArgoFigPoly"
       fill="0"
       fillcolor="white"
       stroke="1"

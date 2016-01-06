@@ -72,9 +72,9 @@ bool SimpleState::addTransition(std::shared_ptr<Transition> in_transition)
 }
 
 // -----------------------------------------------------------------------------------
-bool SimpleState::addJoin(std::shared_ptr<JoinTransition> in_join)
+bool SimpleState::addJoin(std::shared_ptr<Join> in_join)
 {
-  this->_joinTransitions.push_back(in_join);
+  this->_joinPseudostates.push_back(in_join);
   return true;
 }
 
@@ -84,7 +84,7 @@ std::shared_ptr<Transition> SimpleState::fireTransition() const
 #ifdef WARNING
   std::shared_ptr<Transition> fired_transition = nullptr;
 #endif
-  for (std::vector<std::shared_ptr<Transition> >::const_iterator it = this->_transitions.begin(); it != this->_transitions.end(); it++)
+  for (auto it = this->_transitions.begin(); it != this->_transitions.end(); it++)
     {
 #ifndef WARNING
       if ((*it)->isActivated())
@@ -96,8 +96,9 @@ std::shared_ptr<Transition> SimpleState::fireTransition() const
       else if (fired_transition && (*it)->isActivated())
 	{
 	  std::cout << "WARNING: SimpleState::fireTransition, state \"" << *this->_stateName <<
-	    "\" had fired more than one transition \"" << *(fired_transition->name()) << "\" and \"" << 
-	    *((*it)->name()) << "\"." << std::endl;
+	    "\" has fired more than one transition." << std::endl;
+	  std::cout << "Transitions \"" << *(fired_transition->name()) << "\" and \"" <<
+	    *((*it)->name()) << "\" have been fired." << std::endl;
 	}
 #endif
     }
@@ -111,10 +112,11 @@ std::shared_ptr<Transition> SimpleState::fireTransition() const
 // -----------------------------------------------------------------------------------
 bool SimpleState::init()
 {
-  for (std::vector<std::shared_ptr<Transition> >::iterator it = this->_transitions.begin(); it != this->_transitions.end(); it++)
+  for (auto it = this->_transitions.begin(); it != this->_transitions.end(); it++)
     if (!(*it)->init())
       {
-	std::cout << "ERROR: SimpleState::init, transition \"" << *((*it)->name()) << "\" can't be initialized." << std::endl;
+	std::cout << "ERROR: SimpleState::init, transition \"" << *((*it)->name()) <<
+	  "\" initialization failed." << std::endl;
 	return false;
       }
     else
@@ -141,7 +143,7 @@ bool SimpleState::finalize()
 }
 
 // -----------------------------------------------------------------------------------
-bool SimpleState::run(RegionInfo &in_region_info)
+bool SimpleState::run(RegionInfo &io_region_info)
 {
   return true;
 }
@@ -163,17 +165,6 @@ void SimpleState::exit() const
 }
 
 // -----------------------------------------------------------------------------------
-bool SimpleState::isCompleted() const
-{
-  return true;
-}
-
-// -----------------------------------------------------------------------------------
-void SimpleState::completed() const
-{
-}
-
-// -----------------------------------------------------------------------------------
 std::shared_ptr<Region> SimpleState::findRegion(std::shared_ptr<std::string> in_region_name) const
 {
   return nullptr;
@@ -188,7 +179,7 @@ std::shared_ptr<SimpleState> SimpleState::findState(std::shared_ptr<std::string>
 // -----------------------------------------------------------------------------------
 bool SimpleState::checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller) const
 {
-  std::vector<std::string>::const_iterator it = std::find(in_states_names->begin(), in_states_names->end(), *this->_stateName);
+  auto it = std::find(in_states_names->begin(), in_states_names->end(), *this->_stateName);
   if (it != in_states_names->end())
     return true;
   else
@@ -225,13 +216,16 @@ bool InitialState::addTransition(std::shared_ptr<Transition> in_transition)
   if (this->SimpleState::_transitions.size() != 0)
     {
       std::cout << "ERROR: InitialState::addTransition, initial state \"" << *this->_stateName <<
-	"\" has already one transition and can't add transition \"" << *(in_transition->name()) << "\"." << std::endl;
+	"\" has already one transition." << std::endl;
+      std::cout << "The transition \"" << *(in_transition->name()) <<
+	"\" can't be added." << std::endl;
       return false;
     }
   else if (in_transition->isTriggered())
     {
       std::cout << "ERROR: InitialState::addTransition, initial state \"" << *this->_stateName <<
-	" can't add triggered transition \"" << *(in_transition->name()) << "\"." << std::endl;
+	"\" can't add a triggered transition." << std::endl;
+      std::cout << "The transition \"" << *(in_transition->name()) << "\" is triggered." << std::endl;
       return false;
     }
   else
@@ -244,25 +238,10 @@ bool InitialState::addTransition(std::shared_ptr<Transition> in_transition)
 // -----------------------------------------------------------------------------------
 std::shared_ptr<Transition> InitialState::fireTransition() const
 {
-  return this->SimpleState::_transitions[0];
-}
-
-// -----------------------------------------------------------------------------------
-bool InitialState::init()
-{
-  if (this->SimpleState::_transitions.size() != 1)
-    {
-      std::cout << "ERROR: InitialState::init, initial state \"" << *this->_stateName <<
-	"\" has no transition." << std::endl;
-      return false;
-    }
-  else return true;
-}
-
-// -----------------------------------------------------------------------------------
-bool InitialState::finalize()
-{
-  return true;
+  if (this->SimpleState::_transitions.size() != 0)
+    return this->SimpleState::_transitions[0];
+  else
+    return nullptr;  
 }
 
 // -----------------------------------------------------------------------------------
@@ -432,11 +411,13 @@ bool Region::init()
     {
       this->_activeState = this->_startingState;
       
-      std::shared_ptr<Transition> fired_transition = this->_activeState->fireTransition();
+      auto fired_transition = this->_activeState->fireTransition();
       if (!fired_transition)
 	{
 	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName <<
-	    "\" firing transition failed for initial pseudostate \"" << *(this->_activeState->name()) << "." << std::endl;
+	    "\" failure of the firing of a transition." << std::endl;
+	  std::cout << "Initial pseudostate \"" << *(this->_activeState->name()) <<
+	    "\" doesn't have any transition." << std::endl;
 	  return false;
 	}
       fired_transition->effect();
@@ -448,15 +429,17 @@ bool Region::init()
       
       if (!this->_activeState)
 	{
-	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName << "\" can't retrieve reached state \"" <<
-	    *(this->_activeState->name()) << "\", firing transition \"" << *(fired_transition->name()) <<
-	    "\"." << std::endl;
+	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName <<
+	    "\" failure of the retrieving of a state." << std::endl;	   
+	  std::cout << "State \"" << *(this->_activeState->name()) << "\" fired from transition \"" <<
+	    *(fired_transition->name()) << "\" can't be retrieved." << std::endl;
 	  return false;
 	}
       if (!this->_activeState->init())
 	{
-	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName << "\" state \"" <<
-	    *(this->_activeState->name()) << "\" initialization failed." << std::endl;
+	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName <<
+	    "\" failure of the initialization of a state." << std::endl;
+	  std::cout << "State \"" << *(this->_activeState->name()) << "\" initialization failed." << std::endl;
 	  return false;
 	}
       return true;
@@ -465,8 +448,9 @@ bool Region::init()
     {
       if (!this->_activeState->init())
 	{
-	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName << "\" state \"" <<
-	    *(this->_activeState->name()) << "\" initialization failed." << std::endl;
+	  std::cout << "ERROR: Region::init, in region \"" << *this->_regionName <<
+	    "\" failure of the initialization of a state." << std::endl;
+	  std::cout << "State \"" << *(this->_activeState->name()) << "\" initialization failed." << std::endl;
 	  return false;
 	}
       return true;
@@ -483,8 +467,8 @@ bool Region::init()
 bool Region::initFork(std::shared_ptr<std::vector<std::string> > in_states_names)
 {
   bool is_initialized = false;
-  std::vector<std::string>::iterator jt = in_states_names->end();
-  std::vector<std::shared_ptr<SimpleState> >::iterator it = this->_states.begin();  
+  auto jt = in_states_names->end();
+  auto it = this->_states.begin();  
   while ((it != this->_states.end()) && !is_initialized && (jt == in_states_names->end()))
     {      
       if ((*it)->initFork(in_states_names)) is_initialized = true;
@@ -498,7 +482,7 @@ bool Region::initFork(std::shared_ptr<std::vector<std::string> > in_states_names
     {      
       this->_activeState = *it;
 #ifdef DEBUG
-      std::cout << "DEBUG: Region::initFork, \"" << *(this->_activeState->name()) << "\"." << std::endl;
+      std::cout << "DEBUG: Region::initFork, active state \"" << *(this->_activeState->name()) << "\"." << std::endl;
 #endif
       return true;
     }
@@ -510,8 +494,9 @@ bool Region::finalize()
 {
   if (!this->_activeState->finalize())
     {
-      std::cout << "ERROR: Region::finalize, region \"" << *this->_regionName << "\" state \"" <<
-	*(this->_activeState->name()) << "\" finalization failed." << std::endl;
+      std::cout << "ERROR: Region::finalize, in region \"" << *this->_regionName <<
+	"\" failure of the finalization of a state." << std::endl;
+      std::cout << "State \"" << *(this->_activeState->name()) << "\" finalization failed." << std::endl;
       return false;
     }
   this->_activeState = nullptr;
@@ -519,22 +504,23 @@ bool Region::finalize()
 }
 
 // -----------------------------------------------------------------------------------
-bool Region::run(RegionInfo &in_region_info)
+bool Region::run(RegionInfo &io_region_info)
 {
-  if (!this->_activeState->run(in_region_info))
+  if (!this->_activeState->run(io_region_info))
     {
-      std::cout << "ERROR: Region::run, region \"" << *this->_regionName << "\" state \"" <<
-	*(this->_activeState->name()) << "\" run failed." << std::endl;
+      std::cout << "ERROR: Region::run, region \"" << *this->_regionName <<
+	"\" run failed." << std::endl;
       return false;
     }
 
-  if (!in_region_info._transition_firing_allowed || in_region_info._is_terminated) return true;
-  std::shared_ptr<Transition> fired_transition = this->_activeState->fireTransition();
+  if (!io_region_info._transition_firing_allowed || io_region_info._is_terminated) return true;
+  auto fired_transition = this->_activeState->fireTransition();
   if (!fired_transition) return true;
   if (!this->_activeState->finalize())
     {
-      std::cout << "ERROR: Region::run, region \"" << *this->_regionName << "\" state \"" <<
-	*(this->_activeState->name()) << "\" finalization failed." << std::endl;
+      std::cout << "ERROR: Region::run, in region \"" << *this->_regionName <<
+	"\" failure of the finalization of a state." << std::endl;
+      std::cout << "State \"" << *(this->_activeState->name()) << "\" finalization failed." << std::endl;
       return false;
     }
   fired_transition->effect();
@@ -555,21 +541,24 @@ bool Region::run(RegionInfo &in_region_info)
   
   if (this->_activeState)
     {
-      if (this->_activeState->isKind("TerminateState")) in_region_info._is_terminated = true;
+      if (this->_activeState->isKind("TerminateState")) io_region_info._is_terminated = true;
       
       if (!this->_activeState->init())
 	{
-	  std::cout << "ERROR: Region::run, region \"" << *this->_regionName << "\" state \"" <<
-	    *(this->_activeState->name()) << "\" initialization failed." << std::endl;
+	  std::cout << "ERROR: Region::run, in region \"" << *this->_regionName <<
+	    "\" failure of the initialization of a state." << std::endl;
+	  std::cout << "State \"" << *(this->_activeState->name()) << "\" initialization failed." << std::endl;
 	  return false;
 	}
-      in_region_info._transition_fired = true;
+      io_region_info._transition_fired = true;
       return true;
     }
   else
     {
-      std::cout << "ERROR: Region::run, region \"" << *this->_regionName << "\" can't retrieve reached state \"" <<
-	*(this->_activeState->name()) << "\", firing  transition \"" << *(fired_transition->name()) << "\"." << std::endl;
+      std::cout << "ERROR: Region::run, in region \"" << *this->_regionName <<
+	"\" failure of the retrieving of a state." << std::endl;
+      std::cout << "State \"" << *(this->_activeState->name()) << "\" fired from transition \"" <<
+	*(fired_transition->name()) << "\" can't be retrieved." << std::endl;
       return false;
     }
 }
@@ -583,13 +572,14 @@ std::shared_ptr<SimpleState> Region::activeState() const
 // -----------------------------------------------------------------------------------
 std::shared_ptr<SimpleState> Region::findStateHere(std::shared_ptr<std::string> in_state_name) const
 {
-  for (std::vector<std::shared_ptr<SimpleState> >::const_iterator it = this->_states.begin(); it != this->_states.end(); it++)
+  for (auto it = this->_states.begin(); it != this->_states.end(); it++)
     {
       if (*((*it)->name()) == *in_state_name) return *it;
     }
   
-  std::cout << "ERROR: Region::findStateHere, region \"" << *this->_regionName << "\" state \"" <<
-    *in_state_name << "\" not founded." << std::endl;
+  std::cout << "ERROR: Region::findStateHere, in region \"" << *this->_regionName <<
+    "\" failure of the retrieving of a state." << std::endl;
+  std::cout << "State \"" << *in_state_name << "\" not found." << std::endl;
   return nullptr;
 }
 
@@ -597,7 +587,7 @@ std::shared_ptr<SimpleState> Region::findStateHere(std::shared_ptr<std::string> 
 std::shared_ptr<Region> Region::findRegion(std::shared_ptr<std::string> in_region_name) const
 {
   std::shared_ptr<Region> region;
-  for (std::vector<std::shared_ptr<SimpleState> >::const_iterator it = this->_states.begin(); it != this->_states.end(); it++)
+  for (auto it = this->_states.begin(); it != this->_states.end(); it++)
     {
       region = (*it)->findRegion(in_region_name);
       if (region) return region;
@@ -609,8 +599,7 @@ std::shared_ptr<Region> Region::findRegion(std::shared_ptr<std::string> in_regio
 std::shared_ptr<SimpleState> Region::findState(std::shared_ptr<std::string> in_state_name) const
 {  
   std::shared_ptr<SimpleState> state;
-  for (std::vector<std::shared_ptr<SimpleState> >::const_iterator it = this->_states.begin();
-       it != this->_states.end(); it++)
+  for (auto it = this->_states.begin(); it != this->_states.end(); it++)
     {
       if (*((*it)->name()) == *in_state_name) return *it;
       else
@@ -625,7 +614,7 @@ std::shared_ptr<SimpleState> Region::findState(std::shared_ptr<std::string> in_s
 // -----------------------------------------------------------------------------------
 bool Region::checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller) const
 {
-  for (std::vector<std::shared_ptr<SimpleState> >::const_iterator it = this->_states.begin(); it != this->_states.end(); it++)
+  for (auto it = this->_states.begin(); it != this->_states.end(); it++)
     if ((*it)->checkForkOrJoin(in_states_names)) return true;
   
   return false;
@@ -633,149 +622,71 @@ bool Region::checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_state
 
 //#########################################################################################################
 /*
-  CompositeState
+  RegionsComponent
 */
 
 // -----------------------------------------------------------------------------------
-CompositeState::CompositeState(const char *in_state_name) : SimpleState(in_state_name)
+RegionsComponent::RegionsComponent() {}
+
+// -----------------------------------------------------------------------------------
+RegionsComponent::~RegionsComponent() {}
+
+// -----------------------------------------------------------------------------------
+RegionsComponent::RegionsComponent(RegionsComponent &&in_regions_component) :
+  _regions(std::move(in_regions_component._regions))
 {
 }
 
 // -----------------------------------------------------------------------------------
-CompositeState::~CompositeState() 
-{ 
+RegionsComponent& RegionsComponent::operator = (RegionsComponent &&in_regions_component)
+{
+  this->_regions = std::move(in_regions_component._regions);
+  return *this;
 }
 
 // -----------------------------------------------------------------------------------
-void CompositeState::newRegion(const char *in_region_name)
+void RegionsComponent::newRegion(const char *in_region_name)
 {
-  std::shared_ptr<Region> new_region = std::make_shared<Region>(in_region_name);  
+  auto new_region = std::make_shared<Region>(in_region_name);  
   this->_regions.push_back(new_region);
 }
 
 // -----------------------------------------------------------------------------------
-bool CompositeState::init()
+bool RegionsComponent::init()
 {
-  this->SimpleState::init();
-  
-  for (std::vector<std::shared_ptr<Region> >::iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
-    if (!(*it)->init())
-      {
-	std::cout << "ERROR: CompositeState::init, state \"" << *this->_stateName <<
-	  "\" region \"" << *((*it)->name()) << "\" initialization failed." << std::endl;
-	
-	return false;
-      }
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
+    {
+      if (!(*it)->init())
+	{
+	  std::cout << "ERROR: RegionsComponent::init, region \"" << *((*it)->name()) <<
+	    "\" initialization failed." << std::endl;
+	  return false;
+	}
+    }
   return true;
 }
 
 // -----------------------------------------------------------------------------------
-bool CompositeState::initFork(std::shared_ptr<std::vector<std::string> > in_states_names)
+bool RegionsComponent::run(RegionInfo &io_region_info)
 {
-  bool is_regions_initialized = true;
-  for (std::vector<std::shared_ptr<Region> >::iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
-    is_regions_initialized = is_regions_initialized && (*it)->initFork(in_states_names);
-  if (is_regions_initialized) return true;
-  else return false;
-}
-
-// -----------------------------------------------------------------------------------
-bool CompositeState::finalize()
-{
-  this->SimpleState::finalize();
-  
-  for (std::vector<std::shared_ptr<Region> >::iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
-    if (!(*it)->finalize())
-      {
-	std::cout << "ERROR: CompositeState::finalize, state \"" << *this->_stateName <<
-	  "\" region \"" << *((*it)->name()) << "\" finalization failed." << std::endl;
-	return false;
-      }
-  return true;
-}
-
-// -----------------------------------------------------------------------------------
-bool CompositeState::run(RegionInfo &in_region_info)
-{
-  for (std::vector<std::shared_ptr<Region> >::iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
     {
       RegionInfo region_info;
       region_info.init();
       if (!(*it)->run(region_info))
-	{
-	  std::cout << "ERROR: CompositeState::run, state \"" << *this->_stateName <<
-	    "\" run failed." << std::endl;
-	  return false;
-	}
-      if (region_info._transition_fired || !region_info._transition_firing_allowed) in_region_info._transition_firing_allowed = false;
-      if (region_info._is_terminated) in_region_info._is_terminated = true;
-    }
-  if (this->isCompleted()) this->completed();
-  return true;
-}
-
-// -----------------------------------------------------------------------------------
-std::shared_ptr<Transition> CompositeState::fireTransition() const
-{
-  std::shared_ptr<Transition> fired_transition = this->SimpleState::fireTransition();
-#ifndef WARNING
-  if (fired_transition) return fired_transition;
-#endif
-
-  bool is_join_ok;
-  int i;
-  for (std::vector<std::shared_ptr<JoinTransition> >::const_iterator it = this->SimpleState::_joinTransitions.begin();
-       it != this->SimpleState::_joinTransitions.end(); it++)
-    {
-      if ((*it)->isActivated())
-	{
-	  is_join_ok = true;
-	  i = 0;
-	  while (i < (*it)->startingStates() && is_join_ok)
-	    {
-	      std::shared_ptr<SimpleState> state = this->findState((*it)->startingState(i));
-	      if (*(this->findRegion(state->owningRegion())->activeState()->name()) != *(state->name()))
-		is_join_ok = false;
-	      i++;
-	    }
-#ifndef WARNING
-	  if (is_join_ok) return *it;
-#else
-	  if (is_join_ok && !fired_transition) fired_transition = *it;
-	  else if (is_join_ok && fired_transition)
-	    {
-	      std::cout << "WARNING: CompositeState::fireTransition(), state \"" << *this->_stateName <<
-		"\" had fired more than one transition \"" << *(fired_transition->name()) << "\" and \"" <<
-		*((*it)->name()) << "\"." << std::endl;
-	    }
-#endif
-	}
-    }  
-  return fired_transition;
-}
-
-// -----------------------------------------------------------------------------------
-bool CompositeState::isCompleted() const
-{
-  std::shared_ptr<SimpleState> active_state;
-  for (std::vector<std::shared_ptr<Region> >::const_iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
-    {
-      active_state = (*it)->activeState();
-      if (!active_state)
-	{
-	  std::cout << "ERROR: CompositeState::isJoined, state \"" << *this->_stateName <<
-	    "\" can't retrieve the active state of region \"" << *((*it)->name()) << "\"." << std::endl;
-	}
-      else if (!active_state->isKind("FinalState")) return false;
+	return false;
+      if (region_info._transition_fired || !region_info._transition_firing_allowed)
+	io_region_info._transition_firing_allowed = false;
+      if (region_info._is_terminated) io_region_info._is_terminated = true;
     }
   return true;
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<Region> CompositeState::findRegion(std::shared_ptr<std::string> in_region_name) const
+std::shared_ptr<Region> RegionsComponent::findRegion(std::shared_ptr<std::string> in_region_name) const
 {
   std::shared_ptr<Region> region;
-  for (std::vector<std::shared_ptr<Region> >::const_iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
     {
       if ((*((*it)->name()) == *in_region_name)) return *it;
       else
@@ -788,10 +699,10 @@ std::shared_ptr<Region> CompositeState::findRegion(std::shared_ptr<std::string> 
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<SimpleState> CompositeState::findState(std::shared_ptr<std::string> in_state_name) const
+std::shared_ptr<SimpleState> RegionsComponent::findState(std::shared_ptr<std::string> in_state_name) const
 {
   std::shared_ptr<SimpleState> state;
-  for (std::vector<std::shared_ptr<Region> >::const_iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
     {
       state = (*it)->findState(in_state_name);
       if (state) return state;
@@ -799,28 +710,187 @@ std::shared_ptr<SimpleState> CompositeState::findState(std::shared_ptr<std::stri
   return nullptr;
 }
 
+//#########################################################################################################
+/*
+  CompositeState
+*/
+
+// -----------------------------------------------------------------------------------
+CompositeState::CompositeState(const char *in_state_name) : SimpleState(in_state_name), RegionsComponent()
+{
+}
+
+// -----------------------------------------------------------------------------------
+CompositeState::CompositeState(const char *in_state_name, RegionsComponent &in_regions_component) :
+  SimpleState(in_state_name), RegionsComponent(std::move(in_regions_component))
+{
+}
+
+// -----------------------------------------------------------------------------------
+CompositeState::~CompositeState() 
+{ 
+}
+
+// -----------------------------------------------------------------------------------
+void CompositeState::newRegion(const char *in_region_name)
+{
+  this->RegionsComponent::newRegion(in_region_name);
+}
+
+// -----------------------------------------------------------------------------------
+bool CompositeState::init()
+{
+  this->SimpleState::init();
+  
+  if (!this->RegionsComponent::init())
+    {
+      std::cout << "ERROR: CompositeState::init, state \"" << *this->_stateName <<
+	"\" initialization failed." << std::endl;
+      return false;
+    }
+  else
+    return true;
+}
+
+// -----------------------------------------------------------------------------------
+bool CompositeState::initFork(std::shared_ptr<std::vector<std::string> > in_states_names)
+{
+  bool is_regions_initialized = true;
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
+    is_regions_initialized = is_regions_initialized && (*it)->initFork(in_states_names);
+  if (is_regions_initialized) return true;
+  else return false;
+}
+
+// -----------------------------------------------------------------------------------
+bool CompositeState::finalize()
+{
+  this->SimpleState::finalize();
+  
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
+    if (!(*it)->finalize())
+      {
+	std::cout << "ERROR: CompositeState::finalize, in state \"" << *this->_stateName <<
+	  "\" failure of the finalization of a region." << std::endl;
+	std::cout << "Region \"" << *((*it)->name()) << "\" finalization failed." << std::endl;
+	return false;
+      }
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+bool CompositeState::run(RegionInfo &io_region_info)
+{
+  if (!this->RegionsComponent::run(io_region_info))
+    {
+      std::cout << "ERROR: RegionsComponent::run, state \"" << *this->_stateName <<
+	"\" run failed." << std::endl;
+      return false;
+    }
+  if (this->isCompleted()) this->completed();
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+std::shared_ptr<Transition> CompositeState::fireTransition() const
+{
+  auto fired_transition = this->SimpleState::fireTransition();
+#ifndef WARNING
+  if (fired_transition) return fired_transition;
+#endif
+
+  bool is_join_ok;
+  int i;
+  for (auto it = this->SimpleState::_joinPseudostates.begin(); it != this->SimpleState::_joinPseudostates.end(); it++)
+    {
+      if ((*it)->isActivated())
+	{
+	  is_join_ok = true;
+	  i = 0;
+	  while (i < (*it)->startingStates() && is_join_ok)
+	    {
+	      auto state = this->findState((*it)->startingState(i));
+	      if (*(this->findRegion(state->owningRegion())->activeState()->name()) != *(state->name()))
+		is_join_ok = false;
+	      i++;
+	    }
+#ifndef WARNING
+	  if (is_join_ok) return *it;
+#else
+	  if (is_join_ok && !fired_transition) fired_transition = *it;
+	  else if (is_join_ok && fired_transition)
+	    {
+	      std::cout << "WARNING: CompositeState::fireTransition, state \"" << *this->_stateName <<
+		"\" has fired more than one transition." << std::endl;
+	      std::cout << "Transitions \"" << *(fired_transition->name()) << "\" and \"" <<
+		*((*it)->name()) << "\" have been fired." << std::endl;
+	    }
+#endif
+	}
+    }  
+  return fired_transition;
+}
+
+// -----------------------------------------------------------------------------------
+bool CompositeState::isCompleted() const
+{
+  std::shared_ptr<SimpleState> active_state;
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
+    {
+      active_state = (*it)->activeState();
+      if (!active_state)
+	{
+	  std::cout << "ERROR: CompositeState::isJoined, in state \"" << *this->_stateName <<
+	    "\" failure of the retrieving of a region's active state." << std::endl;
+	  std::cout << "Region \"" << *((*it)->name()) << "\" doesn't have any active state." << std::endl;
+	}
+      else if (!active_state->isKind("FinalState")) return false;
+    }
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+void CompositeState::completed() const
+{
+}
+
+// -----------------------------------------------------------------------------------
+std::shared_ptr<Region> CompositeState::findRegion(std::shared_ptr<std::string> in_region_name) const
+{
+  return this->RegionsComponent::findRegion(in_region_name);
+}
+
+// -----------------------------------------------------------------------------------
+std::shared_ptr<SimpleState> CompositeState::findState(std::shared_ptr<std::string> in_state_name) const
+{
+  return this->RegionsComponent::findState(in_state_name);
+}
+
 // -----------------------------------------------------------------------------------
 bool CompositeState::checkForkOrJoin(std::shared_ptr<std::vector<std::string> > in_states_names, bool in_is_caller) const
 {
   bool is_ok = true;
-  for (std::vector<std::shared_ptr<Region> >::const_iterator it = this->_regions.begin(); it != this->_regions.end(); it++)
+  for (auto it = this->_regions.begin(); it != this->_regions.end(); it++)
     {
       is_ok = (*it)->checkForkOrJoin(in_states_names) && is_ok;
       if (!is_ok && in_is_caller)
 	{
-	  std::cout << "ERROR: CompositeState::checkForkOrJoin, state \"" << *this->_stateName <<
-	    "\" has incomings/outgoings missing inside region \"" << *((*it)->name()) << "\"." << std::endl;
+	  std::cout << "ERROR: CompositeState::checkForkOrJoin, in state \"" << *this->_stateName <<
+	    "\" bad fork or join transition compound specification." << std::endl;
+	  std::cout << "There are missing incomings/outgoings transitions inside the region \"" <<
+	    *((*it)->name()) << "\"." << std::endl;
 	  return false;
 	}
     }
   
-  std::vector<std::string>::iterator it = std::find(in_states_names->begin(), in_states_names->end(), *this->_stateName);
+  auto it = std::find(in_states_names->begin(), in_states_names->end(), *this->_stateName);
   if (it != in_states_names->end())
     {
       if (is_ok)
 	{
-	  std::cout << "ERROR: CompositeState::checkForkOrJoin, state \"" << *this->_stateName <<
-	    "\" has incomings/outgoings badly specified inside regions and in the state." << std::endl;
+	  std::cout << "ERROR: CompositeState::checkForkOrJoin, in state \"" << *this->_stateName <<
+	    "\" bad fork or join transition compound specification." << std::endl;
+	  std::cout << "There are incomings/outgoings inside the state's regions and from the state." << std::endl;
 	  return false;
 	}
       else return true;

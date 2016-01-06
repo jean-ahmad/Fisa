@@ -18,9 +18,9 @@ The compilation and installation have been tested on the following platforms:
 Through the installation process, setting the "WARNING" option allows or disallows the printing of consistency information when the machine is running.
 
 <h3>Procedures</h3>
-<list type="bullet">
-  <item>\subpage installation_commandinterpreter "1. Installation procedure by using a command interpreter (example on a Linux platform)."</item>
-  <item>\subpage installation_ide "2. Installation procedure by using an IDE (example on a Windows platform)."</item>
+<list type="number">
+  <item>\subpage installation_commandinterpreter "Installation procedure by using a command interpreter (example on a Linux platform)."</item>
+  <item>\subpage installation_ide "Installation procedure by using an IDE (example on a Windows platform)."</item>
 </list>
 
 <h3>Documentation</h3>

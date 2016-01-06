@@ -84,14 +84,14 @@ namespace fisa
     //! Constructor.
     ChangeEvent() {}
 
-    //! \private
+    //! Destructor.
     virtual ~ChangeEvent() {}
 
-    //! Switching the value of an attribute.
+    //! Switching the value of the attribute with name specified in first input argument.
     bool switching(const char *in_attribute_name, const T in_attribute_value)
     {
       std::string attribute_name(in_attribute_name);
-      typename std::map<std::string, T>::iterator it = this->_attributes.find(attribute_name);
+      auto it = this->_attributes.find(attribute_name);
       if (it != this->_attributes.end())
 	{
 	  (*it).second = in_attribute_value;
@@ -99,20 +99,20 @@ namespace fisa
 	}
       else
 	{
-	  std::cout << "ERROR: ChangeEvent::switching, cannot retrieve attribute \"" << attribute_name <<
-	    "\"." << std::endl;
+	  std::cout << "ERROR: ChangeEvent::switching, attribute \"" << attribute_name <<
+	    "\" not found." << std::endl;
 	  return false;
 	}
     }
 
-    //! Inherited from Event class.
+    //! Specializes Event's "init" method.
     bool init() {return true;}
     
-    //! Inherited from Event class.
+    //! Specializes Event's "happened" method.
     virtual bool happened() const = 0;
 
   protected:
-    //! Adding an attribute and his initial value.
+    //! Adding an attribute with name specified in argument and his initial value.
     void add(const char *in_attribute_name, const T in_initial_value)
     {  
       this->_attributes[std::string(in_attribute_name)] = in_initial_value;
@@ -122,7 +122,7 @@ namespace fisa
     T value(const char *in_attribute_name) const
     {
       std::string attribute_name(in_attribute_name);
-      typename std::map<std::string, T>::const_iterator it = this->_attributes.find(attribute_name);
+      auto it = this->_attributes.find(attribute_name);
       if (it == this->_attributes.end())
 	{
 	  std::cout << "ERROR: ChangeEvent::status, attribute \"" << attribute_name <<
@@ -142,7 +142,7 @@ namespace fisa
   */
   //! Class to implement a transition triggering by the passing of a time duration or the reaching of an absolute time.
   /**
-   *  Currently, only supported by the GCC compiler.
+   * Supported on Open-source and Windows platforms
    **/
 
   class TimeEvent : public Event
@@ -151,25 +151,27 @@ namespace fisa
     //! Constructor.
     TimeEvent();
 
-    //! \private
+    //! Destructor.
     ~TimeEvent();
 
-    //! Sets the time duration until the event happen.
+    //! Sets the time duration until the triggering of the event.
     /**
-     * The "in_exceeding" parameter allow to define a margin within which the event is valid.
+     * The "in_exceeding" parameter allows to define an interval within which the event is 
+     * considered as triggered.
      **/
     void after(std::shared_ptr<DateTime> in_date_time, std::shared_ptr<DateTime> in_exceeding);
 
-    //! Sets the absolute time until the event happen.
+    //! Sets the absolute time at which the event will trigger.
     /**
-     * The "in_exceeding" parameter allow to define a margin within which the event is valid.
+     * The "in_exceeding" parameter allows to define an interval within which the event is 
+     * considered as triggered.
      **/
     void at(std::shared_ptr<DateTime> in_date_time, std::shared_ptr<DateTime> in_exceeding);
 
-    //! Inherited from Event class.
+    //! Specializes Event's "init" method.
     bool init();
 
-    //! Inherited from Event class.
+    //! Specializes Event's "happened" method.
     bool happened() const;
     
   private:
@@ -183,55 +185,74 @@ namespace fisa
   /*
     Transition
   */
-  //! Class to program a transition between two states of the machine.
+  //! Class to program a transition between two states in a region of a machine.
   /** 
-   * When a transition is fired the "effect" method is called after the "exit" method of the starting 
-   * state and before the "entry" method of the reached state. Use the "setTrigger" method to define 
-   * a trigger. If no trigger is set, the transition is always activated. Transition from an "InitialState" 
-   * state must no be triggered. The class should be inherited and the "effect" method overloaded. 
-  **/
+   * To program an automata, only the constructor, the overloadable method "effect" and 
+   * the method "setTrigger" should be used.
+   * A transition is activated by the triggering of an event associated with it.
+   * The "setTrigger" method should be used to set the triggering Event. If no 
+   * trigger has been defined, the transition is always activated.
+   * The overloadable method "effect" is called when the machine has fired the transition 
+   * and changes of state.
+   **/
 
   class Transition
   {
   public:
     //! Constructor.
-    Transition(const char *_in_transitoin_name, const char *in_starting_state_name, const char *in_reachable_state_name);
+    /**
+     * First parameter: the name of the transition.
+     * Second parameter: the name of the starting state.
+     * Third parameter: the name of the reachable state.
+     **/
+    Transition(const char *_in_transition_name, const char *in_starting_state_name, const char *in_reachable_state_name);
 
-    //! \private
+    //! Destructor.
     virtual ~Transition();
 
-    //! \private
+    //! Retrurns the name of the transition.
     std::shared_ptr<std::string> name() const;
 
-    //! Sets the transition trigger.
+    //! Sets the transition's triggering Event.
     void setTrigger(const std::shared_ptr<Event> in_trigger);
 
-    //! \private
+    //! Initializes the trigger.
     bool init();
 
-    //! \private
+    //! Returns the number of states that start from the transition.
+    /**
+     * This method is specialized by composite transitions with multiple starting states.
+     **/
     virtual int startingStates() const;
 
-    //! \private
+    //! Returns the name of the starting state at the index specified in input argument.
+    /** 
+     * This method is specialized by composite transitions with multiple starting states.
+     **/
     virtual std::shared_ptr<std::string> startingState(int in_state_index) const;
 
-    //! \private
+    //! Returns the number of states that are reachable by the transition.
+    /**
+     * The method is specialized by composite transitions with multiple reachable states.
+     **/
     virtual int reachableStates() const;
-
-    //! \private
+    
+    //! Returns the name of the reachable state at the index specified in input argument.
+    /**
+     * The method is specialized by composite transitions with multiple reachable states.
+     **/
     virtual std::shared_ptr<std::string> reachableState(int in_state_index) const;
 
-    //! \private
+    //! Returns the names of the reachable states.
     virtual std::shared_ptr<std::vector<std::string> > reachableStatesNames() const;
 
-    //! Executed when the transition is fired.
-    /** Should be overloaded **/
+    //! Overloadable method which is called when the transition is activated and the machine changes of state.
     virtual void effect() const;
     
-    //! \private
+    //! Asks if a triggering Event has been defined.
     bool isTriggered() const;
 
-    //! \private
+    //! Asks if the transition's Event has been triggered.
     bool isActivated() const;
 
   protected:
@@ -247,62 +268,66 @@ namespace fisa
   /*
     JoinIncoming
   */
-  //! Class to program an incoming part of a join transition.
+  //! Class to program an incoming path of a join composite transition with multiple starting states.
   /**
-   * When the join transition is fired, each method "effect" of incoming parts are called.
-   * The class should ne inherited and the "effect" method overloaded. 
+   * To program automata, only the constructor and the overloadable method "effect" should be used.
+   * When a join composite transition is activated, each method "effect" of the incoming paths are called.
    **/
 
   class JoinIncoming
   {
   public:
-    //! Constructor.
+    //! Construct and incoming path with the name of the starting state specified in input argument.
     JoinIncoming(const char *in_starting_state_name);
 
-    //! \private
+    //! Destructor.
     virtual ~JoinIncoming();
 
-    //! \private
+    //! Returns the name of the state starting from the incoming path.
     std::shared_ptr<std::string> startingState();
 
-    //! Executed when the join transition is fired.
-    /** This method should be overloaded. **/
+    //! Overloadable method executed the the join composite transition that own the incoming is activated and the machine changes of state.
     virtual void effect();
-
+    
   private:
     std::shared_ptr<std::string> _startingStateName;
-    };
+  };
   
-
+  
   //#########################################################################################################
   /*
-    JoinTransition    
+    Join    
   */
-  //! Class to program a transition between states in a composite state and a state.
+  //! Class to program a pseudostate that act as a transition with multiple starting states and one reachable state.
   /**
-   * When a state in a region of a composite state take part to incomings, all others regions of the
-   * composite state must have a state taking part to incomings.
+   * To program automata, only the constructor and the "addIncoming" method should be used.
+   * When a state in a region of a CompositeState takes part to incomings, all others regions of the
+   * CompositeState must have a state that takes part to incomings.
    **/
 
-  class JoinTransition : public Transition
+  class Join : public Transition
   {
   public:
     //! Constructor.
-    JoinTransition(const char *in_join_name, const char *in_reachable_state_name);
+    /**
+     * First argument: the name of the join composite transition.
+     * Second argument: the name of the reachable state.
+     **/
+    Join(const char *in_join_name, const char *in_reachable_state_name);
 
-    //! Adding an incoming part to the join transition.
+    //! Adding an incoming path (JoinIncoming) to the join composite transition.
     void addIncoming(std::shared_ptr<JoinIncoming> in_incoming_transition);
 
-    //! \private
+    //! Specializes Transition's "startingStates" method.
      int startingStates() const;
 
-    //! \private
+    //! Specializes Transition's "startingStatesNames" method.
     std::shared_ptr<std::vector<std::string> > startingStatesNames() const;
 
-    //! \private
+    //! Specializes Transition's "startingState" method.
     std::shared_ptr<std::string> startingState(int in_state_index) const;
 
-    //! Calls each method "effect" of incoming parts.
+    //! Calls each "effect" method of incoming paths.
     void effect() const;
 
   private:
@@ -314,61 +339,68 @@ namespace fisa
   /*
     ForkOutgoing
   */
-  //! Class to program an outgoing part of a fork transition.
+  //! Class to program an outgoing path of a fork composite transition with multiple reachable states.
   /**
-   * Each method "effect" of incoming parts are called when the fork transition is fired.
-   * The class should be inherited and the "effect" method overloaded.
+   * To program automata, only the constructor and the overloadable method "effect" should be used.
+   * When a fork composite transition is activated, each method "effect" of the outgoing paths are called.
    **/
 
   class ForkOutgoing
   {
   public:
-    //! Constructor
+    //! Construct an outgoing path with the name of the reachable state specified in input argument.
     ForkOutgoing(const char *in_reachable_state_name);
 
-    //! \private
+    //! Destructor.
     virtual ~ForkOutgoing();
 
-    //! \private
+    //! Returns the name of the reachable state by the outgoind path.
     std::shared_ptr<std::string> reachableState();
 
     //! Executed when the fork transition is fired.
     /** This method should be overloaded. **/
-    virtual void effect();
 
+    //! Overloadable method executed the the fork composite transition that own the outgoing is activated and the machine changes of state.
+    virtual void effect();
+    
   private:
     std::shared_ptr<std::string> _reachableStateName;
-    };
+  };
   
   //#########################################################################################################
   /*
-    ForkTransition    
+    Fork    
   */
-  //! Class to program a transition from a state and states in a composite state.
+  //! Class to program a pseudostate that act as a transition with one starting state and multiple reachable states.
   /**
-   * When a state in region of a composite state take part to outgoings, all others regions of the
-   * composite state must have a state taking part to outgoings.
+   * To program automata, only the constructor and the "addOutgoing" method should be used.
+   * When a state in a region of a CompositeState takes part to outgoings, all others regions of the
+   * CompositeState must have a state that takes part to outgoings.
    **/
 
-  class ForkTransition : public Transition
+  class Fork : public Transition
   {
   public:
     //! Constructor.
-    ForkTransition(const char *in_fork_name, const char *in_starting_state_name);
-
-    //! Adding an outgoing part in the fork transition.
+    /**
+     * First argument: the name of the fork composite transition.
+     * Second argument: the name of the starting state.
+     **/
+    Fork(const char *in_fork_name, const char *in_starting_state_name);
+    
+    //! Adding an outgoing path to the fork composite transition.
     void addOutgoing(std::shared_ptr<ForkOutgoing> in_outgoing_transition);
 
-    //! \private
+    //! Specializes Transition's "reachableStates" method.
      int reachableStates() const;
 
-    //! \private
+    //! Specializes Transition's "reachableStatesNames" method.
     std::shared_ptr<std::vector<std::string> > reachableStatesNames() const;
     
-    //! \private
+    //! Specializes Transition's "reachableState" method.
     std::shared_ptr<std::string> reachableState(int in_state_index) const;
 
-    //! Calls each method "effect" of outgoing parts.
+    //! Calls each method "effect" of outgoing paths.
     void effect() const;
 
   private:

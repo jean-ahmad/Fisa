@@ -162,7 +162,8 @@ bool Transition::init()
   if (!this->_trigger)
     {
 #ifdef WARNING
-      std::cout << "WARNING: Transition::init, transition \"" << *this->_transitionName << "\" no trigger defined." << std::endl;
+      std::cout << "WARNING: Transition::init, transition \"" << *this->_transitionName << "\" doesn't have any trigger." <<
+	std::endl;
 #endif
       return true;
     }
@@ -225,7 +226,7 @@ bool Transition::isActivated() const
     {
 #ifdef WARNING
       std::cout << "WARNING: Transition::isActivated, transition \"" << *this->_transitionName <<
-	"\" is not triggered." << std::endl;
+	"\" doesn't have any trigger." << std::endl;
 #endif
       return true;
     }
@@ -258,51 +259,51 @@ void JoinIncoming::effect()
 
 //#######################################################################################
 /*
-  JoinTransition
+  Join
 */
 
 // -----------------------------------------------------------------------------------
-JoinTransition::JoinTransition(const char *in_join_name, const char *in_reachable_state_name) :
+Join::Join(const char *in_join_name, const char *in_reachable_state_name) :
   Transition(in_join_name, "", in_reachable_state_name)
 {
 }
 
 // -----------------------------------------------------------------------------------
-void JoinTransition::addIncoming(std::shared_ptr<JoinIncoming> in_incoming_transition)
+void Join::addIncoming(std::shared_ptr<JoinIncoming> in_incoming_transition)
 {
   this->_incomingTransitions.push_back(in_incoming_transition);
 }
 
 // -----------------------------------------------------------------------------------
-int JoinTransition::startingStates() const
+int Join::startingStates() const
 {
   return this->_incomingTransitions.size();
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<std::vector<std::string> > JoinTransition::startingStatesNames() const
+std::shared_ptr<std::vector<std::string> > Join::startingStatesNames() const
 {
-  std::shared_ptr<std::vector<std::string> > starting_states_names = std::make_shared<std::vector<std::string> >();
-  for (std::vector<std::shared_ptr<JoinIncoming> >::const_iterator it = this->_incomingTransitions.begin(); it != this->_incomingTransitions.end(); it++)
+  auto starting_states_names = std::make_shared<std::vector<std::string> >();
+  for (auto it = this->_incomingTransitions.begin(); it != this->_incomingTransitions.end(); it++)
     starting_states_names->push_back(*((*it)->startingState()));
   
   return starting_states_names;
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<std::string> JoinTransition::startingState(int in_state_index) const
+std::shared_ptr<std::string> Join::startingState(int in_state_index) const
 {
   return this->_incomingTransitions[in_state_index]->startingState();
 }
 
 // -----------------------------------------------------------------------------------
-void JoinTransition::effect() const
+void Join::effect() const
 {
 #ifdef DEBUG
-  std::cout << "DEBUG: JoinTransition::effect, join transition \"" << *this->_transitionName << "\"." << std::endl;
+  std::cout << "DEBUG: Join::effect, join transition \"" << *this->_transitionName << "\"." << std::endl;
 #endif
   
-  for (std::vector<std::shared_ptr<JoinIncoming> >::const_iterator it = this->_incomingTransitions.begin(); it != this->_incomingTransitions.end(); it++)
+  for (auto it = this->_incomingTransitions.begin(); it != this->_incomingTransitions.end(); it++)
     (*it)->effect();
 }
 
@@ -331,51 +332,51 @@ void ForkOutgoing::effect()
 
 //#######################################################################################
 /*
-  ForkTransition
+  Fork
 */
 
 // -----------------------------------------------------------------------------------
-ForkTransition::ForkTransition(const char *in_fork_name, const char *in_starting_state_name) :
+Fork::Fork(const char *in_fork_name, const char *in_starting_state_name) :
   Transition(in_fork_name, in_starting_state_name, "")
 {
 }
 
 // -----------------------------------------------------------------------------------
-void ForkTransition::addOutgoing(std::shared_ptr<ForkOutgoing> in_outgoing_transition)
+void Fork::addOutgoing(std::shared_ptr<ForkOutgoing> in_outgoing_transition)
 {
   this->_outgoingTransitions.push_back(in_outgoing_transition);
 }
 
 // -----------------------------------------------------------------------------------
-int ForkTransition::reachableStates() const
+int Fork::reachableStates() const
 {
   return this->_outgoingTransitions.size();
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<std::vector<std::string> > ForkTransition::reachableStatesNames() const
+std::shared_ptr<std::vector<std::string> > Fork::reachableStatesNames() const
 {
-  std::shared_ptr<std::vector<std::string> > reachable_states_names = std::make_shared<std::vector<std::string> >();
-  for (std::vector<std::shared_ptr<ForkOutgoing> >::const_iterator it = this->_outgoingTransitions.begin(); it != this->_outgoingTransitions.end(); it++)
+  auto reachable_states_names = std::make_shared<std::vector<std::string> >();
+  for (auto it = this->_outgoingTransitions.begin(); it != this->_outgoingTransitions.end(); it++)
     reachable_states_names->push_back(*((*it)->reachableState()));
   
   return reachable_states_names;
 }
 
 // -----------------------------------------------------------------------------------
-std::shared_ptr<std::string> ForkTransition::reachableState(int in_state_index) const
+std::shared_ptr<std::string> Fork::reachableState(int in_state_index) const
 {
   return this->_outgoingTransitions[in_state_index]->reachableState();
 }
 
 // -----------------------------------------------------------------------------------
-void ForkTransition::effect() const
+void Fork::effect() const
 {
 #ifdef DEBUG
-  std::cout << "DEBUG: ForkTransition::effect, fork transition \"" << *this->_transitionName << "\"." << std::endl;
+  std::cout << "DEBUG: Fork::effect, fork transition \"" << *this->_transitionName << "\"." << std::endl;
 #endif
   
-  for (std::vector<std::shared_ptr<ForkOutgoing> >::const_iterator it = this->_outgoingTransitions.begin(); it != this->_outgoingTransitions.end(); it++)
+  for (auto it = this->_outgoingTransitions.begin(); it != this->_outgoingTransitions.end(); it++)
     (*it)->effect();
 }
 

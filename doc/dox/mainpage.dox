@@ -1,20 +1,20 @@
 /**
 \mainpage Documentation summary
 
-<list type="bullet">
-  <item>\subpage introduction "1. Introduction"</item>
+<list type="number">
+  <item>\subpage introduction "Introduction"</item>
 
-  <item>\subpage installation "2. Installation"</item>
+  <item>\subpage installation "Installation"</item>
   
-  <item>\subpage tutorials "3. Tutorials"</item>
+  <item>\subpage tutorials "Tutorials"</item>
 
-  <item><a href="annotated.html">4. API documentation</a></item>
+  <item><a href="annotated.html">API documentation</a></item>
 
-  <item>\subpage development "5. Development"</item>
+  <item>\subpage development "Development"</item>
   
-  <item>\subpage licensing "6. Licensing"</item>
+  <item>\subpage licensing "Licensing"</item>
 
-  <item>\subpage contacts "7. Contacts"</item>
+  <item>\subpage contacts "Contacts"</item>
 </list>
 
 
